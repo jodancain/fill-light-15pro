@@ -1,0 +1,59 @@
+{
+  "status": "草稿 v0.1（G0）。只含本项目自己的布局和由禁入区核算推出的约束；layout 里的数字是基线布局，G5 建模时细化。",
+  "units": "mm",
+  "coordinate_system": "从手机背面看，原点在左上角；x 向右，y 向下（离顶边的距离），z 为高出背面玻璃的高度（朝被摄物为正）。手机外形 70.6 × 146.6 × 8.25（苹果官网规格），屏幕玻璃在 z = -8.25。",
+  "phone_data": {
+    "note": "手机的原始尺寸（镜头、禁入锥、禁金属区、按键位置等）来自苹果尺寸图，图纸带保密声明，不进仓库。格式见 interface/phone_template.json，本地文件放 refs/iphone15pro.json。",
+    "template": "interface/phone_template.json",
+    "local_file": "refs/iphone15pro.json"
+  },
+  "derived_constraints": {
+    "source": "tools/keepout.py → interface/keepout.json",
+    "head_gap_above_top_edge_min": 12.0,
+    "head_z_rear_max_at_gap_12": 14.2,
+    "head_z_front_max_above_screen_at_gap_12": 13.1,
+    "head_depth_max_at_gap_12": 35.6,
+    "head_depth_max_at_gap_15": 39.0,
+    "pod_cell_axis_y_min": 68.9,
+    "pod_top_y_min": 57.1,
+    "phone_flash_outer_cone": "让不开；用本灯时不用手机闪光灯"
+  },
+  "layout": {
+    "head": {
+      "gap_above_top_edge": 12.0,
+      "x": [-0.7, 71.3], "y": [-64.0, -12.0],
+      "z_rear_max": 13.0, "z_front_max_above_screen": 12.5, "depth_max": 34.0,
+      "depth_budget": "柔光板 2 + 柔光距离 8 + 灯板 1.6 + 散热片 + 风扇 + 两侧壳壁约 3 ≤ 34 → 散热片加风扇不超过约 19（例如 12 + 7）；放不下就把灯头再抬高 3 mm（底边离顶边 15 mm 时允许约 39）",
+      "window": {"center": [35.3, -38.0], "size": [64.0, 44.0]},
+      "fan": {"size": 40, "center": [35.3, -42.0], "note": "风扇外框 y −62 到 −22，在灯头外壳以内"}
+    },
+    "neck": {
+      "x": [46.0, 68.0], "y": [-12.0, 57.0], "thickness": 6.0,
+      "harness_width_max": 8.0,
+      "harness_route": "线束靠颈部左侧（x 约 46–54），尽量远离手机指南针（在颈部右上方）；电源线和地线交错并排"
+    },
+    "pod": {
+      "cells": "2 × 21700 横放",
+      "cell_axis_y": [68.9, 91.3],
+      "x": [-3.1, 73.7], "y": [57.1, 103.1], "thickness": 23.4,
+      "cell_length_range": [69.8, 72.5], "cell_d_max": 21.4, "wall": 1.2, "base": 1.0
+    },
+    "main_board": {"x": [5.3, 65.3], "y": [104.8, 125.8], "pcb_thickness": 1.0, "height_out_max": 8.0},
+    "ports": {"input_usb_c": {"x": 22.0, "y": 125.8, "facing": "+y"}, "output_usb_c": {"x": 48.0, "y": 125.8, "facing": "+y"}},
+    "buttons": [{"name": "电源", "x": 15.0, "y": 110.0}, {"name": "加", "x": 27.0, "y": 110.0}, {"name": "减", "x": 39.0, "y": 110.0}],
+    "indicators": {"x": [46.0, 62.0], "y": 110.0, "count": 5},
+    "driver_board": {"size": [60.0, 22.0], "pcb_thickness": 1.6, "where": "灯头内，散热片上方"},
+    "led_board": {"size": [66.0, 46.0], "pcb_thickness": 1.6, "grid": [12, 6], "pitch": [5.5, 7.6]}
+  },
+  "harness": {
+    "power": ["VSYS", "GND", "VSYS", "GND"],
+    "power_connector": "每针额定不低于 5 A；或改成 3 正 3 地，断一根后其余每针仍在额定内",
+    "signal": ["5V", "GND", "DIM_W", "DIM_C", "DRV_EN", "FAN_PWM", "NTC_LED", "NTC_RTN"]
+  },
+  "known_deviations": [
+    "线束穿过手机顶部禁金属带，经过镜头右侧三块禁入区，并靠近指南针",
+    "钢壳电芯、主板上开关电源的电感都在不放导磁材料的区域内",
+    "电池仓盖住背面中部的无线充电线圈区（禁金属和导磁材料）：不支持无线充电和 MagSafe",
+    "背面加厚远超苹果建议的 2.1 mm（图纸注 8）"
+  ]
+}

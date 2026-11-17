@@ -1,0 +1,48 @@
+# 系统与编辑器
+.DS_Store
+*.icloud
+* 2.*
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 本地资料：规格书、苹果尺寸图和手机原始尺寸数据都只放本地
+refs/*
+!refs/.gitkeep
+*.pdf
+
+# 密钥与凭据
+.env
+.env.*
+*.pem
+*.key
+*.p12
+secrets.*
+
+# AI 工具的本地配置
+.claude/
+.codex/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+
+# KiCad 临时文件
+~*.lck
+*-backups/
+_autosave-*
+fp-info-cache
+*.kicad_prl
+
+# 打印切片输出
+*.gcode
+*.gcode.3mf
+*.bgcode
+
+# 生成物与日志
+hw/out/tmp/
+build/
+*.log

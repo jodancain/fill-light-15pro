@@ -1,0 +1,156 @@
+{
+ "note": "由 tools/keepout.py 按本地手机尺寸数据算出的禁入区结果；只含推导结果，不含图纸原始尺寸。",
+ "head": [
+  {
+   "gap": 0,
+   "rear_limit": 7.0,
+   "rear_by": "闪光灯内锥",
+   "rear_if_flash_outer": 5.0,
+   "front_limit": 4.6,
+   "front_by": "前置镜头区",
+   "depth_budget": 19.9
+  },
+  {
+   "gap": 5,
+   "rear_limit": 10.4,
+   "rear_by": "闪光灯内锥",
+   "rear_if_flash_outer": 6.0,
+   "front_limit": 9.1,
+   "front_by": "环境光传感器",
+   "depth_budget": 27.7
+  },
+  {
+   "gap": 8,
+   "rear_limit": 12.1,
+   "rear_by": "镜头1 超广角（左上）",
+   "rear_if_flash_outer": 6.6,
+   "front_limit": 10.8,
+   "front_by": "环境光传感器",
+   "depth_budget": 31.1
+  },
+  {
+   "gap": 10,
+   "rear_limit": 13.2,
+   "rear_by": "镜头1 超广角（左上）",
+   "rear_if_flash_outer": 7.0,
+   "front_limit": 12.0,
+   "front_by": "环境光传感器",
+   "depth_budget": 33.4
+  },
+  {
+   "gap": 12,
+   "rear_limit": 14.2,
+   "rear_by": "镜头1 超广角（左上）",
+   "rear_if_flash_outer": 7.4,
+   "front_limit": 13.1,
+   "front_by": "环境光传感器",
+   "depth_budget": 35.6
+  },
+  {
+   "gap": 15,
+   "rear_limit": 15.9,
+   "rear_by": "镜头1 超广角（左上）",
+   "rear_if_flash_outer": 8.0,
+   "front_limit": 14.9,
+   "front_by": "环境光传感器",
+   "depth_budget": 39.0
+  },
+  {
+   "gap": 20,
+   "rear_limit": 18.6,
+   "rear_by": "镜头1 超广角（左上）",
+   "rear_if_flash_outer": 9.0,
+   "front_limit": 17.7,
+   "front_by": "环境光传感器",
+   "depth_budget": 44.6
+  }
+ ],
+ "pod_round": {
+  "cell_axis_y": 68.9,
+  "limited_by": "激光雷达",
+  "pod_top_y": 57.1,
+  "pod_thickness": 23.4,
+  "detail": {
+   "镜头1 超广角（左上）": 60.2,
+   "镜头2 主摄（左下）": 61.0,
+   "镜头3 长焦（右中）": 41.0,
+   "激光雷达": 67.4
+  }
+ },
+ "pod_round_18650": {
+  "cell_axis_y": 66.1,
+  "limited_by": "激光雷达",
+  "pod_top_y": 55.6,
+  "pod_thickness": 20.8,
+  "detail": {
+   "镜头1 超广角（左上）": 55.1,
+   "镜头2 主摄（左下）": 58.0,
+   "镜头3 长焦（右中）": 39.2,
+   "激光雷达": 64.6
+  }
+ },
+ "pod_square": [
+  {
+   "thickness": 10,
+   "top_y": 52.1,
+   "limited_by": "激光雷达"
+  },
+  {
+   "thickness": 12,
+   "top_y": 53.8,
+   "limited_by": "激光雷达"
+  },
+  {
+   "thickness": 21.5,
+   "top_y": 61.8,
+   "limited_by": "激光雷达"
+  },
+  {
+   "thickness": 24,
+   "top_y": 64.0,
+   "limited_by": "激光雷达"
+  }
+ ],
+ "low_profile": [
+  {
+   "y": 48,
+   "max_height": 7.0,
+   "limited_by": "激光雷达"
+  },
+  {
+   "y": 50,
+   "max_height": 9.3,
+   "limited_by": "激光雷达"
+  },
+  {
+   "y": 52,
+   "max_height": 11.7,
+   "limited_by": "激光雷达"
+  },
+  {
+   "y": 54,
+   "max_height": 14.0,
+   "limited_by": "激光雷达"
+  },
+  {
+   "y": 56,
+   "max_height": 16.4,
+   "limited_by": "激光雷达"
+  },
+  {
+   "y": 58,
+   "max_height": 18.7,
+   "limited_by": "激光雷达"
+  },
+  {
+   "y": 60,
+   "max_height": 21.1,
+   "limited_by": "激光雷达"
+  },
+  {
+   "y": 62,
+   "max_height": 23.4,
+   "limited_by": "激光雷达"
+  }
+ ]
+}

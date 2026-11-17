@@ -1,0 +1,40 @@
+{
+  "note": "手机尺寸数据的格式。苹果尺寸图带保密声明，原始尺寸不进仓库：从下面的官网下载 iPhone 15 Pro 尺寸图，照这个格式填好数字，存为 refs/iphone15pro.json（refs/ 已被忽略）。tools/keepout.py 和以后的结构脚本都读那个文件。",
+  "source": "https://developer.apple.com/accessories/dimensional-drawings/ → iPhone 15 Pro",
+  "units": "mm",
+  "coordinate_system": "从手机背面看，原点在左上角；x 向右，y 向下（离顶边的距离）；z 为高出背面玻璃的高度。图纸按正面标注左右，填写时换成背面坐标。",
+  "body": {"width": null, "length": null, "thickness": null, "glass": [null, null], "display_active": [null, null]},
+  "plateau": {"height": null, "lens_glass_height": null, "x": [null, null], "y": [null, null]},
+  "rear_cameras": {
+    "镜头1 超广角（左上）": {"x": null, "y": null, "lens_d": null, "cone_deg": null, "apex_from_front_glass": null},
+    "镜头2 主摄（左下）": {"x": null, "y": null, "lens_d": null, "cone_deg": null, "apex_from_front_glass": null},
+    "镜头3 长焦（右中）": {"x": null, "y": null, "lens_d": null, "cone_deg": null, "apex_from_front_glass": null}
+  },
+  "lidar": {"x": null, "y": null, "base_d_on_plateau": null, "cone_deg": null, "apex_from_front_glass": null},
+  "flash": {"x": null, "y": null, "d": null, "inner_cone_deg": null, "outer_cone_deg": null,
+            "origin_from_front_glass": null, "transition_from_front_glass": null},
+  "rear_mic": {"x": null, "y": null, "d": null},
+  "front": {
+    "camera_and_sensors": {"center_x": null, "center_y": null, "size": [null, null], "cone_deg": null},
+    "ambient_light_sensor": {"center_y": null, "d": null, "zone_w": null, "cone_deg": null},
+    "receiver": {"width": null, "y": [null, null]}
+  },
+  "sides": {
+    "edge_x_70": {"action_button_y": null, "volume_up_y": null, "volume_down_y": null, "sim_tray_y": null},
+    "edge_x_0": {"side_button_y": null, "side_button_half_len": null, "side_window_y": [null, null]},
+    "usb_c_opening_min": [null, null]
+  },
+  "no_metal_zones": [
+    {"name": "矩形区：填 x、y 范围", "x": [null, null], "y": [null, null]},
+    {"name": "圆形区：填圆心和直径", "center": [null, null], "d": null}
+  ],
+  "keep_out_areas_sheet3": {
+    "areas": [{"name": null, "center": [null, null], "size": [null, null], "cone_deg": null}]
+  },
+  "no_magnetic_zone": {
+    "x": [null, null], "y_top": null,
+    "lower_arc": {"radius": null, "ends_y": null, "center": [null, null], "lowest_y": null}
+  },
+  "compass": [null, null],
+  "back_case_thickness_max": null
+}
