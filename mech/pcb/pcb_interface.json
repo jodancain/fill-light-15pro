@@ -1,0 +1,6082 @@
+{
+  "source": "interface/mech_elec.json",
+  "source_sha256": "f32960d861d32a5928aae452ab6b35bd1f790cfc6a48f2cf67c689ff0aa2d123",
+  "direction_convention": "PCB 局部坐标：箭头指向插头所在侧/拔出或引线方向；插入相反。",
+  "version": "0.3",
+  "units": "mm",
+  "layers": {
+    "BOARD_OUTLINE": "成品板边",
+    "HOLES": "钻孔 / 紧固禁区",
+    "CONNECTORS": "接口 / 针一",
+    "FIXED_PARTS": "固定器件中心",
+    "LED_ARRAY": "3030 阵列",
+    "KEEPOUT_TOP": "正面禁布",
+    "KEEPOUT_BOTTOM": "背面禁布",
+    "HEIGHT_LIMIT": "分区限高",
+    "DIMENSIONS": "尺寸",
+    "NOTES": "说明",
+    "PHONE_REF": "公开手机外形",
+    "ENCLOSURE": "壳体 / 电芯",
+    "HARNESS": "线束走向"
+  },
+  "boards": {
+    "main": {
+      "id": "main",
+      "name": "电源与控制主板",
+      "size": [
+        60.0,
+        21.0
+      ],
+      "corner_radius": 1.5,
+      "thickness": 1.0,
+      "layers": 4,
+      "material": "FR-4",
+      "origin": [
+        5.3,
+        125.8,
+        4.6
+      ],
+      "axes": {
+        "u": [
+          1,
+          0,
+          0
+        ],
+        "v": [
+          0,
+          -1,
+          0
+        ],
+        "top": [
+          0,
+          0,
+          1
+        ]
+      },
+      "origin_surface": "BOT",
+      "holes": [],
+      "connectors": [
+        {
+          "ref": "J1",
+          "type": "输入 USB-C 口",
+          "center": [
+            16.7,
+            3.25
+          ],
+          "rect": [
+            12.0,
+            0.0,
+            21.4,
+            6.5
+          ],
+          "height": 3.8,
+          "pin_count": 16,
+          "pitch": null,
+          "pin1": [
+            12.65,
+            5.9
+          ],
+          "pins": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "pattern": "usb",
+          "nets": [
+            "GND",
+            "VBUS_IN",
+            "CC1",
+            null,
+            null,
+            null,
+            "VBUS_IN",
+            "GND",
+            "GND",
+            "VBUS_IN",
+            "CC2",
+            null,
+            null,
+            null,
+            "VBUS_IN",
+            "GND"
+          ],
+          "status": "拟按 16 接点 USB2 型机械占位；A1 标记为方向基准，不是厂家焊脚坐标。以实选封装为准",
+          "node": "input_usb_c",
+          "contacts": [
+            "A1",
+            "A4",
+            "A5",
+            "A6",
+            "A7",
+            "A8",
+            "A9",
+            "A12",
+            "B1",
+            "B4",
+            "B5",
+            "B6",
+            "B7",
+            "B8",
+            "B9",
+            "B12"
+          ],
+          "port_mouth": [
+            16.7,
+            0
+          ]
+        },
+        {
+          "ref": "J2",
+          "type": "输出 USB-C 口",
+          "center": [
+            42.7,
+            3.25
+          ],
+          "rect": [
+            38.0,
+            0.0,
+            47.4,
+            6.5
+          ],
+          "height": 3.8,
+          "pin_count": 16,
+          "pitch": null,
+          "pin1": [
+            38.65,
+            5.9
+          ],
+          "pins": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "pattern": "usb",
+          "nets": [
+            "GND",
+            "VBUS_OUT",
+            "CC1",
+            null,
+            null,
+            null,
+            "VBUS_OUT",
+            "GND",
+            "GND",
+            "VBUS_OUT",
+            "CC2",
+            null,
+            null,
+            null,
+            "VBUS_OUT",
+            "GND"
+          ],
+          "status": "拟按 16 接点 USB2 型机械占位；A1 标记为方向基准，不是厂家焊脚坐标。以实选封装为准",
+          "node": "output_usb_c",
+          "contacts": [
+            "A1",
+            "A4",
+            "A5",
+            "A6",
+            "A7",
+            "A8",
+            "A9",
+            "A12",
+            "B1",
+            "B4",
+            "B5",
+            "B6",
+            "B7",
+            "B8",
+            "B9",
+            "B12"
+          ],
+          "port_mouth": [
+            42.7,
+            0
+          ]
+        },
+        {
+          "ref": "J3",
+          "type": "2×2 功率卧座候选",
+          "center": [
+            51.7,
+            10.2
+          ],
+          "rect": [
+            47.2,
+            6.7,
+            56.2,
+            13.7
+          ],
+          "height": 7.5,
+          "pin_count": 4,
+          "pitch": 3,
+          "pin1": [
+            50.2,
+            11.7
+          ],
+          "pins": [
+            [
+              50.2,
+              11.7
+            ],
+            [
+              53.2,
+              11.7
+            ],
+            [
+              50.2,
+              8.7
+            ],
+            [
+              53.2,
+              8.7
+            ]
+          ],
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "pattern": "2x2",
+          "nets": [
+            "VSYS",
+            "VSYS",
+            "GND",
+            "GND"
+          ],
+          "status": "坐标锁定；封装/焊盘待 ECAD 按最终型号核对",
+          "node": "main_j3"
+        },
+        {
+          "ref": "J4",
+          "type": "8P 带锁卧座",
+          "center": [
+            29.4,
+            9.6
+          ],
+          "rect": [
+            23.5,
+            7.4,
+            35.3,
+            11.8
+          ],
+          "height": 4.5,
+          "pin_count": 8,
+          "pitch": 1.25,
+          "pin1": [
+            25.025,
+            9.6
+          ],
+          "pins": [
+            [
+              25.025,
+              9.6
+            ],
+            [
+              26.275,
+              9.6
+            ],
+            [
+              27.525,
+              9.6
+            ],
+            [
+              28.775,
+              9.6
+            ],
+            [
+              30.025,
+              9.6
+            ],
+            [
+              31.275,
+              9.6
+            ],
+            [
+              32.525,
+              9.6
+            ],
+            [
+              33.775,
+              9.6
+            ]
+          ],
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "pattern": "row",
+          "nets": [
+            "GND",
+            "DIM_W",
+            "DIM_C",
+            "DRV_EN",
+            "DRV_FLT",
+            "FAN_PWM",
+            "FAN_TACH",
+            "NTC_LED"
+          ],
+          "status": "坐标锁定；封装/焊盘待 ECAD 按最终型号核对",
+          "node": "main_j4"
+        },
+        {
+          "ref": "J5",
+          "type": "电芯与测温焊盘",
+          "center": [
+            11.5,
+            19.5
+          ],
+          "rect": [
+            1.25,
+            18.45,
+            21.75,
+            20.55
+          ],
+          "height": 1.2,
+          "pin_count": 7,
+          "pitch": 3,
+          "pin1": [
+            2.5,
+            19.5
+          ],
+          "pins": [
+            [
+              2.5,
+              19.5
+            ],
+            [
+              5.5,
+              19.5
+            ],
+            [
+              8.5,
+              19.5
+            ],
+            [
+              11.5,
+              19.5
+            ],
+            [
+              14.5,
+              19.5
+            ],
+            [
+              17.5,
+              19.5
+            ],
+            [
+              20.5,
+              19.5
+            ]
+          ],
+          "direction": [
+            0,
+            1,
+            0
+          ],
+          "pattern": "row",
+          "nets": [
+            "C2_P",
+            "C2_N",
+            "C1_P",
+            "C1_N",
+            "NTC1",
+            "NTC2",
+            "NTC_RTN"
+          ],
+          "status": "坐标锁定；封装/焊盘待 ECAD 按最终型号核对",
+          "node": "main_j5"
+        },
+        {
+          "ref": "TP1",
+          "type": "调试触点",
+          "center": [
+            5.9,
+            4.6
+          ],
+          "rect": [
+            1.75,
+            3.75,
+            10.05,
+            5.45
+          ],
+          "height": 0.1,
+          "pin_count": 6,
+          "pitch": 1.27,
+          "pin1": [
+            2.7250000000000005,
+            4.6
+          ],
+          "pins": [
+            [
+              2.7250000000000005,
+              4.6
+            ],
+            [
+              3.995,
+              4.6
+            ],
+            [
+              5.265000000000001,
+              4.6
+            ],
+            [
+              6.535,
+              4.6
+            ],
+            [
+              7.805000000000001,
+              4.6
+            ],
+            [
+              9.075,
+              4.6
+            ]
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "pattern": "row",
+          "nets": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "status": "6 个触点预留，针序待确认；拆罩探测，装好后由罩盖住",
+          "node": "main_tp1",
+          "functional_requirements": [
+            "3V3",
+            "GND",
+            "SWDIO",
+            "SWCLK",
+            "NRST",
+            "UART（单线/双线待确认）"
+          ]
+        }
+      ],
+      "fixed": [
+        {
+          "ref": "SW1",
+          "name": "电源开关同轴中心",
+          "center": [
+            9.7,
+            15.799999999999997
+          ],
+          "rect": [
+            7.55,
+            13.65,
+            11.85,
+            17.95
+          ],
+          "height": 3,
+          "shape": "circle",
+          "side": "TOP",
+          "node": "key_1"
+        },
+        {
+          "ref": "SW2",
+          "name": "加开关同轴中心",
+          "center": [
+            21.7,
+            15.799999999999997
+          ],
+          "rect": [
+            19.55,
+            13.65,
+            23.85,
+            17.95
+          ],
+          "height": 3,
+          "shape": "circle",
+          "side": "TOP",
+          "node": "key_2"
+        },
+        {
+          "ref": "SW3",
+          "name": "减开关同轴中心",
+          "center": [
+            33.7,
+            15.799999999999997
+          ],
+          "rect": [
+            31.55,
+            13.65,
+            35.85,
+            17.95
+          ],
+          "height": 3,
+          "shape": "circle",
+          "side": "TOP",
+          "node": "key_3"
+        },
+        {
+          "ref": "D1",
+          "name": "电量灯／导光柱中心",
+          "center": [
+            40.7,
+            15.799999999999997
+          ],
+          "rect": [
+            39.68,
+            14.78,
+            41.72,
+            16.82
+          ],
+          "height": 0.8,
+          "shape": "circle",
+          "side": "TOP",
+          "node": "light_1"
+        },
+        {
+          "ref": "D2",
+          "name": "电量灯／导光柱中心",
+          "center": [
+            44.7,
+            15.799999999999997
+          ],
+          "rect": [
+            43.68,
+            14.78,
+            45.72,
+            16.82
+          ],
+          "height": 0.8,
+          "shape": "circle",
+          "side": "TOP",
+          "node": "light_2"
+        },
+        {
+          "ref": "D3",
+          "name": "电量灯／导光柱中心",
+          "center": [
+            48.7,
+            15.799999999999997
+          ],
+          "rect": [
+            47.68,
+            14.78,
+            49.72,
+            16.82
+          ],
+          "height": 0.8,
+          "shape": "circle",
+          "side": "TOP",
+          "node": "light_3"
+        },
+        {
+          "ref": "D4",
+          "name": "电量灯／导光柱中心",
+          "center": [
+            52.7,
+            15.799999999999997
+          ],
+          "rect": [
+            51.68,
+            14.78,
+            53.72,
+            16.82
+          ],
+          "height": 0.8,
+          "shape": "circle",
+          "side": "TOP",
+          "node": "light_4"
+        },
+        {
+          "ref": "D5",
+          "name": "电量灯／导光柱中心",
+          "center": [
+            56.7,
+            15.799999999999997
+          ],
+          "rect": [
+            55.68,
+            14.78,
+            57.72,
+            16.82
+          ],
+          "height": 0.8,
+          "shape": "circle",
+          "side": "TOP",
+          "node": "light_5"
+        }
+      ],
+      "leds": [],
+      "keepouts": [
+        {
+          "id": "MATE3",
+          "side": "TOP",
+          "rect": [
+            36,
+            6.7,
+            47.2,
+            13.7
+          ],
+          "why": "J3 插合与拔出空间；须在合罩前操作",
+          "mode": "no_parts"
+        },
+        {
+          "id": "MATE4",
+          "side": "TOP",
+          "rect": [
+            23.5,
+            0.4,
+            35.3,
+            7.4
+          ],
+          "why": "J4 插合空间",
+          "mode": "no_parts"
+        },
+        {
+          "id": "FOOT1",
+          "side": "BOTTOM",
+          "rect": [
+            0,
+            2,
+            3,
+            5
+          ],
+          "why": "绝缘支脚接触面：不放器件/露铜",
+          "mode": "no_parts"
+        },
+        {
+          "id": "FOOT2",
+          "side": "BOTTOM",
+          "rect": [
+            0,
+            16,
+            3,
+            19
+          ],
+          "why": "绝缘支脚接触面：不放器件/露铜",
+          "mode": "no_parts"
+        },
+        {
+          "id": "FOOT3",
+          "side": "BOTTOM",
+          "rect": [
+            57,
+            2,
+            60,
+            5
+          ],
+          "why": "绝缘支脚接触面：不放器件/露铜",
+          "mode": "no_parts"
+        },
+        {
+          "id": "FOOT4",
+          "side": "BOTTOM",
+          "rect": [
+            57,
+            16,
+            60,
+            19
+          ],
+          "why": "绝缘支脚接触面：不放器件/露铜",
+          "mode": "no_parts"
+        },
+        {
+          "id": "CLIP1",
+          "side": "TOP",
+          "rect": [
+            0,
+            2.2,
+            1.5,
+            4.0
+          ],
+          "why": "罩内压脚压板边，不放元件或露铜",
+          "mode": "no_parts"
+        },
+        {
+          "id": "CLIP2",
+          "side": "TOP",
+          "rect": [
+            0,
+            16,
+            1.5,
+            17.8
+          ],
+          "why": "罩内压脚压板边，不放元件或露铜",
+          "mode": "no_parts"
+        },
+        {
+          "id": "CLIP3",
+          "side": "TOP",
+          "rect": [
+            58.5,
+            2.2,
+            60.0,
+            4.0
+          ],
+          "why": "罩内压脚压板边，不放元件或露铜",
+          "mode": "no_parts"
+        },
+        {
+          "id": "CLIP4",
+          "side": "TOP",
+          "rect": [
+            58.5,
+            16,
+            60.0,
+            17.8
+          ],
+          "why": "罩内压脚压板边，不放元件或露铜",
+          "mode": "no_parts"
+        }
+      ],
+      "height_zones": [
+        {
+          "id": "BASE",
+          "rect": [
+            0,
+            0,
+            60.0,
+            21.0
+          ],
+          "top": 8.0,
+          "bot": 1.2,
+          "why": "通用工作限高；局部覆盖区优先，禁布区始终优先"
+        }
+      ]
+    },
+    "driver": {
+      "id": "driver",
+      "name": "双路恒流驱动板",
+      "size": [
+        60.0,
+        22.0
+      ],
+      "corner_radius": 0,
+      "thickness": 1.6,
+      "layers": 4,
+      "material": "FR-4",
+      "origin": [
+        5.299999999999997,
+        -33.4,
+        -18.35
+      ],
+      "axes": {
+        "u": [
+          1,
+          0,
+          0
+        ],
+        "v": [
+          0,
+          -1,
+          0
+        ],
+        "top": [
+          0,
+          0,
+          1
+        ]
+      },
+      "origin_surface": "BOT",
+      "holes": [
+        {
+          "ref": "H1",
+          "center": [
+            2.5,
+            2.5
+          ],
+          "drill": 2.3,
+          "keep_d": 6,
+          "kind": "M2",
+          "plated": false,
+          "keepout_sides": [
+            "TOP",
+            "BOTTOM"
+          ],
+          "forbid": [
+            "copper",
+            "components"
+          ]
+        },
+        {
+          "ref": "H2",
+          "center": [
+            57.5,
+            2.5
+          ],
+          "drill": 2.3,
+          "keep_d": 6,
+          "kind": "M2",
+          "plated": false,
+          "keepout_sides": [
+            "TOP",
+            "BOTTOM"
+          ],
+          "forbid": [
+            "copper",
+            "components"
+          ]
+        },
+        {
+          "ref": "H3",
+          "center": [
+            2.5,
+            19.5
+          ],
+          "drill": 2.3,
+          "keep_d": 6,
+          "kind": "M2",
+          "plated": false,
+          "keepout_sides": [
+            "TOP",
+            "BOTTOM"
+          ],
+          "forbid": [
+            "copper",
+            "components"
+          ]
+        },
+        {
+          "ref": "H4",
+          "center": [
+            57.5,
+            19.5
+          ],
+          "drill": 2.3,
+          "keep_d": 6,
+          "kind": "M2",
+          "plated": false,
+          "keepout_sides": [
+            "TOP",
+            "BOTTOM"
+          ],
+          "forbid": [
+            "copper",
+            "components"
+          ]
+        }
+      ],
+      "connectors": [
+        {
+          "ref": "J1",
+          "type": "2×2 功率座；侧舱向上插",
+          "center": [
+            55.0,
+            10.7
+          ],
+          "rect": [
+            50.8,
+            6.6,
+            59.2,
+            14.8
+          ],
+          "height": 8.0,
+          "pin_count": 4,
+          "pitch": 3,
+          "pin1": [
+            53.5,
+            12.2
+          ],
+          "pins": [
+            [
+              53.5,
+              12.2
+            ],
+            [
+              56.5,
+              12.2
+            ],
+            [
+              53.5,
+              9.2
+            ],
+            [
+              56.5,
+              9.2
+            ]
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "pattern": "2x2",
+          "nets": [
+            "VSYS",
+            "VSYS",
+            "GND",
+            "GND"
+          ],
+          "status": "坐标锁定；封装/焊盘待 ECAD 按最终型号核对",
+          "node": "driver_j1"
+        },
+        {
+          "ref": "J2",
+          "type": "8P 带锁卧座",
+          "center": [
+            44.5,
+            18.5
+          ],
+          "rect": [
+            38.6,
+            16.2,
+            50.4,
+            20.8
+          ],
+          "height": 4.5,
+          "pin_count": 8,
+          "pitch": 1.25,
+          "pin1": [
+            40.125,
+            18.5
+          ],
+          "pins": [
+            [
+              40.125,
+              18.5
+            ],
+            [
+              41.375,
+              18.5
+            ],
+            [
+              42.625,
+              18.5
+            ],
+            [
+              43.875,
+              18.5
+            ],
+            [
+              45.125,
+              18.5
+            ],
+            [
+              46.375,
+              18.5
+            ],
+            [
+              47.625,
+              18.5
+            ],
+            [
+              48.875,
+              18.5
+            ]
+          ],
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "pattern": "row",
+          "nets": [
+            "GND",
+            "DIM_W",
+            "DIM_C",
+            "DRV_EN",
+            "DRV_FLT",
+            "FAN_PWM",
+            "FAN_TACH",
+            "NTC_LED"
+          ],
+          "status": "坐标锁定；封装/焊盘待 ECAD 按最终型号核对",
+          "node": "driver_j2"
+        },
+        {
+          "ref": "J3",
+          "type": "灯板出线焊盘",
+          "center": [
+            18.5,
+            18.6
+          ],
+          "rect": [
+            11.2,
+            17.6,
+            25.8,
+            19.6
+          ],
+          "height": 1.2,
+          "pin_count": 6,
+          "pitch": 2.54,
+          "pin1": [
+            12.15,
+            18.6
+          ],
+          "pins": [
+            [
+              12.15,
+              18.6
+            ],
+            [
+              14.69,
+              18.6
+            ],
+            [
+              17.23,
+              18.6
+            ],
+            [
+              19.77,
+              18.6
+            ],
+            [
+              22.31,
+              18.6
+            ],
+            [
+              24.85,
+              18.6
+            ]
+          ],
+          "direction": [
+            0,
+            1,
+            0
+          ],
+          "pattern": "row",
+          "nets": [
+            "LEDW_P",
+            "LEDW_N",
+            "LEDC_P",
+            "LEDC_N",
+            "NTC_LED",
+            "NTC_RTN"
+          ],
+          "status": "坐标锁定；封装/焊盘待 ECAD 按最终型号核对",
+          "node": "driver_j3"
+        },
+        {
+          "ref": "J4",
+          "type": "风扇 4P 座",
+          "center": [
+            31.5,
+            18.4
+          ],
+          "rect": [
+            28.25,
+            16.5,
+            34.75,
+            20.3
+          ],
+          "height": 4.5,
+          "pin_count": 4,
+          "pitch": 1.25,
+          "pin1": [
+            29.625,
+            18.4
+          ],
+          "pins": [
+            [
+              29.625,
+              18.4
+            ],
+            [
+              30.875,
+              18.4
+            ],
+            [
+              32.125,
+              18.4
+            ],
+            [
+              33.375,
+              18.4
+            ]
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "pattern": "row",
+          "nets": [
+            "5V",
+            "GND",
+            "PWM",
+            "TACH"
+          ],
+          "status": "坐标锁定；封装/焊盘待 ECAD 按最终型号核对",
+          "node": "driver_j4"
+        },
+        {
+          "ref": "J5",
+          "type": "85°C 常闭开关引线焊盘",
+          "center": [
+            4.2,
+            11.5
+          ],
+          "rect": [
+            2.0,
+            10.5,
+            6.4,
+            12.5
+          ],
+          "height": 1.2,
+          "pin_count": 2,
+          "pitch": 2.54,
+          "pin1": [
+            2.93,
+            11.5
+          ],
+          "pins": [
+            [
+              2.93,
+              11.5
+            ],
+            [
+              5.470000000000001,
+              11.5
+            ]
+          ],
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "pattern": "row",
+          "nets": [
+            "DRV_EN_IN",
+            "DRV_EN_SAFE"
+          ],
+          "status": "网名为过温串联两端的功能别名，电气侧定最终名",
+          "node": "driver_j5"
+        }
+      ],
+      "fixed": [
+        {
+          "ref": "L_W",
+          "name": "屏蔽功率电感最大占位",
+          "center": [
+            12.1,
+            7.5
+          ],
+          "rect": [
+            7.1,
+            2.5,
+            17.1,
+            12.5
+          ],
+          "height": 5.5,
+          "shape": "box",
+          "side": "TOP",
+          "node": "driver_l_w"
+        },
+        {
+          "ref": "L_C",
+          "name": "屏蔽功率电感最大占位",
+          "center": [
+            28.2,
+            7.5
+          ],
+          "rect": [
+            23.2,
+            2.5,
+            33.2,
+            12.5
+          ],
+          "height": 5.5,
+          "shape": "box",
+          "side": "TOP",
+          "node": "driver_l_c"
+        }
+      ],
+      "leds": [],
+      "keepouts": [
+        {
+          "id": "MATE2",
+          "side": "TOP",
+          "rect": [
+            38.6,
+            9,
+            50.4,
+            16.2
+          ],
+          "why": "信号插头水平插合占位",
+          "mode": "no_parts"
+        },
+        {
+          "id": "BACK",
+          "side": "BOTTOM",
+          "rect": [
+            0,
+            0,
+            60.0,
+            22.0
+          ],
+          "why": "底面不贴器件；并非全板禁铜",
+          "mode": "no_parts"
+        },
+        {
+          "id": "SHOULDER1",
+          "side": "TOP",
+          "rect": [
+            0,
+            0.2999999999999998,
+            2.5,
+            4.7
+          ],
+          "why": "M2 铜母肩延伸至侧壁",
+          "mode": "no_parts"
+        },
+        {
+          "id": "SHOULDER2",
+          "side": "TOP",
+          "rect": [
+            57.5,
+            0.2999999999999998,
+            60.0,
+            4.7
+          ],
+          "why": "M2 铜母肩延伸至侧壁",
+          "mode": "no_parts"
+        },
+        {
+          "id": "SHOULDER3",
+          "side": "TOP",
+          "rect": [
+            0,
+            17.3,
+            2.5,
+            21.7
+          ],
+          "why": "M2 铜母肩延伸至侧壁",
+          "mode": "no_parts"
+        },
+        {
+          "id": "SHOULDER4",
+          "side": "TOP",
+          "rect": [
+            57.5,
+            17.3,
+            60.0,
+            21.7
+          ],
+          "why": "M2 铜母肩延伸至侧壁",
+          "mode": "no_parts"
+        }
+      ],
+      "height_zones": [
+        {
+          "id": "BASE",
+          "rect": [
+            0,
+            0,
+            60.0,
+            22.0
+          ],
+          "top": 5.5,
+          "bot": 0,
+          "why": "通用工作限高；局部覆盖区优先，禁布区始终优先"
+        },
+        {
+          "id": "PWR_W",
+          "rect": [
+            6.6,
+            0.4,
+            22.4,
+            16.4
+          ],
+          "top": 5.5,
+          "bot": 0,
+          "why": "单路 20 W；电感、续流管、电容",
+          "static_contact_top": 5.95,
+          "clearance_top": 5.95
+        },
+        {
+          "id": "PWR_C",
+          "rect": [
+            22.7,
+            0.4,
+            38.5,
+            16.4
+          ],
+          "top": 5.5,
+          "bot": 0,
+          "why": "单路 20 W；电感、续流管、电容",
+          "static_contact_top": 6.45,
+          "clearance_top": 5.95
+        },
+        {
+          "id": "FAN_BUCK",
+          "rect": [
+            39.5,
+            1,
+            50,
+            8
+          ],
+          "top": 5.5,
+          "bot": 0,
+          "why": "风扇 5 V 降压与去耦",
+          "static_contact_top": 5.95,
+          "clearance_top": 5.95
+        },
+        {
+          "id": "J1_BAY",
+          "rect": [
+            50.3,
+            6.2,
+            59.7,
+            15.1
+          ],
+          "top": 9.5,
+          "bot": 0,
+          "why": "风扇外框以外；仅此区域允许较高插合体",
+          "static_contact_top": 10.95,
+          "clearance_top": 10.95
+        }
+      ],
+      "stack_note": "TPS92692-Q1 双路；L2 完整地平面，BOT 不贴件",
+      "budget": [
+        {
+          "type": "TPS92692-Q1",
+          "w": 6.5,
+          "h": 6.4,
+          "count": 1
+        },
+        {
+          "type": "开关 NMOS",
+          "w": 5,
+          "h": 6,
+          "count": 1
+        },
+        {
+          "type": "SMB 包络",
+          "w": 5.5,
+          "h": 3.8,
+          "count": 1
+        },
+        {
+          "type": "电感",
+          "w": 10,
+          "h": 10,
+          "count": 1
+        },
+        {
+          "type": "输出 1210",
+          "w": 3.2,
+          "h": 2.5,
+          "count": 4
+        },
+        {
+          "type": "输入 1210",
+          "w": 3.2,
+          "h": 2.5,
+          "count": 3
+        },
+        {
+          "type": "2512 采样",
+          "w": 6.3,
+          "h": 3.2,
+          "count": 1
+        },
+        {
+          "type": "调光 PMOS",
+          "w": 5,
+          "h": 6,
+          "count": 1
+        }
+      ],
+      "rough_placement": [
+        {
+          "type": "开关 NMOS",
+          "ch": "C",
+          "index": 1,
+          "rect": [
+            33.75,
+            0.25,
+            38.75,
+            6.25
+          ]
+        },
+        {
+          "type": "开关 NMOS",
+          "ch": "W",
+          "index": 1,
+          "rect": [
+            17.75,
+            0.25,
+            22.75,
+            6.25
+          ]
+        },
+        {
+          "type": "调光 PMOS",
+          "ch": "W",
+          "index": 1,
+          "rect": [
+            5.75,
+            12.75,
+            10.75,
+            18.75
+          ]
+        },
+        {
+          "type": "调光 PMOS",
+          "ch": "C",
+          "index": 1,
+          "rect": [
+            17.75,
+            6.75,
+            22.75,
+            12.75
+          ]
+        },
+        {
+          "type": "SMB 包络",
+          "ch": "W",
+          "index": 1,
+          "rect": [
+            11.25,
+            12.85,
+            16.75,
+            16.65
+          ]
+        },
+        {
+          "type": "2512 采样",
+          "ch": "W",
+          "index": 1,
+          "rect": [
+            0.3500000000000001,
+            5.9,
+            6.65,
+            9.1
+          ]
+        },
+        {
+          "type": "2512 采样",
+          "ch": "C",
+          "index": 1,
+          "rect": [
+            27.85,
+            12.9,
+            34.15,
+            16.1
+          ]
+        },
+        {
+          "type": "SMB 包络",
+          "ch": "C",
+          "index": 1,
+          "rect": [
+            33.85,
+            6.75,
+            37.65,
+            12.25
+          ]
+        },
+        {
+          "type": "输入 1210",
+          "ch": "W",
+          "index": 1,
+          "rect": [
+            17.25,
+            13.4,
+            19.75,
+            16.6
+          ]
+        },
+        {
+          "type": "输出 1210",
+          "ch": "W",
+          "index": 3,
+          "rect": [
+            7.4,
+            19.25,
+            10.6,
+            21.75
+          ]
+        },
+        {
+          "type": "输出 1210",
+          "ch": "W",
+          "index": 2,
+          "rect": [
+            2.75,
+            12.9,
+            5.25,
+            16.1
+          ]
+        },
+        {
+          "type": "输出 1210",
+          "ch": "C",
+          "index": 1,
+          "rect": [
+            24.75,
+            12.9,
+            27.25,
+            16.1
+          ]
+        },
+        {
+          "type": "输出 1210",
+          "ch": "C",
+          "index": 3,
+          "rect": [
+            34.75,
+            12.9,
+            37.25,
+            16.1
+          ]
+        },
+        {
+          "type": "输出 1210",
+          "ch": "C",
+          "index": 4,
+          "rect": [
+            35.25,
+            16.9,
+            37.75,
+            20.1
+          ]
+        },
+        {
+          "type": "输出 1210",
+          "ch": "W",
+          "index": 4,
+          "rect": [
+            20.25,
+            13.4,
+            22.75,
+            16.6
+          ]
+        },
+        {
+          "type": "输出 1210",
+          "ch": "W",
+          "index": 1,
+          "rect": [
+            50.25,
+            0.3999999999999999,
+            52.75,
+            3.6
+          ]
+        },
+        {
+          "type": "输入 1210",
+          "ch": "C",
+          "index": 1,
+          "rect": [
+            50.75,
+            15.9,
+            53.25,
+            19.1
+          ]
+        }
+      ],
+      "compact_candidate": {
+        "inductor_wh": [
+          7,
+          7
+        ],
+        "dimming_pmos_wh": [
+          3,
+          2.5
+        ],
+        "fixed_inductors": [
+          [
+            8.6,
+            4.0,
+            15.6,
+            11.0
+          ],
+          [
+            24.7,
+            4.0,
+            31.7,
+            11.0
+          ]
+        ],
+        "other_parts": [
+          {
+            "type": "TPS92692-Q1",
+            "ch": "W",
+            "index": 1,
+            "rect": [
+              16.25,
+              0.2999999999999998,
+              22.75,
+              6.7
+            ]
+          },
+          {
+            "type": "TPS92692-Q1",
+            "ch": "C",
+            "index": 1,
+            "rect": [
+              32.25,
+              0.2999999999999998,
+              38.75,
+              6.7
+            ]
+          },
+          {
+            "type": "开关 NMOS",
+            "ch": "C",
+            "index": 1,
+            "rect": [
+              27.75,
+              11.25,
+              33.75,
+              16.25
+            ]
+          },
+          {
+            "type": "开关 NMOS",
+            "ch": "W",
+            "index": 1,
+            "rect": [
+              9.25,
+              11.25,
+              14.25,
+              17.25
+            ]
+          },
+          {
+            "type": "SMB 包络",
+            "ch": "W",
+            "index": 1,
+            "rect": [
+              2.75,
+              5.85,
+              8.25,
+              9.65
+            ]
+          },
+          {
+            "type": "2512 采样",
+            "ch": "W",
+            "index": 1,
+            "rect": [
+              8.85,
+              0.3999999999999999,
+              15.15,
+              3.6
+            ]
+          },
+          {
+            "type": "2512 采样",
+            "ch": "C",
+            "index": 1,
+            "rect": [
+              25.35,
+              0.3999999999999999,
+              31.65,
+              3.6
+            ]
+          },
+          {
+            "type": "SMB 包络",
+            "ch": "C",
+            "index": 1,
+            "rect": [
+              34.35,
+              7.25,
+              38.15,
+              12.75
+            ]
+          },
+          {
+            "type": "输入 1210",
+            "ch": "W",
+            "index": 1,
+            "rect": [
+              5.75,
+              0.3999999999999999,
+              8.25,
+              3.6
+            ]
+          },
+          {
+            "type": "输出 1210",
+            "ch": "W",
+            "index": 3,
+            "rect": [
+              16.25,
+              7.4,
+              18.75,
+              10.6
+            ]
+          },
+          {
+            "type": "输出 1210",
+            "ch": "W",
+            "index": 2,
+            "rect": [
+              14.75,
+              11.4,
+              17.25,
+              14.6
+            ]
+          },
+          {
+            "type": "输出 1210",
+            "ch": "C",
+            "index": 1,
+            "rect": [
+              24.75,
+              11.4,
+              27.25,
+              14.6
+            ]
+          },
+          {
+            "type": "输出 1210",
+            "ch": "C",
+            "index": 3,
+            "rect": [
+              21.75,
+              7.4,
+              24.25,
+              10.6
+            ]
+          },
+          {
+            "type": "输出 1210",
+            "ch": "C",
+            "index": 4,
+            "rect": [
+              34.4,
+              13.25,
+              37.6,
+              15.75
+            ]
+          },
+          {
+            "type": "输出 1210",
+            "ch": "W",
+            "index": 4,
+            "rect": [
+              6.25,
+              12.9,
+              8.75,
+              16.1
+            ]
+          },
+          {
+            "type": "输出 1210",
+            "ch": "W",
+            "index": 1,
+            "rect": [
+              8.25,
+              17.9,
+              10.75,
+              21.1
+            ]
+          },
+          {
+            "type": "输入 1210",
+            "ch": "C",
+            "index": 1,
+            "rect": [
+              21.75,
+              11.4,
+              24.25,
+              14.6
+            ]
+          },
+          {
+            "type": "输入 1210",
+            "ch": "W",
+            "index": 3,
+            "rect": [
+              17.75,
+              11.4,
+              20.25,
+              14.6
+            ]
+          },
+          {
+            "type": "输入 1210",
+            "ch": "C",
+            "index": 2,
+            "rect": [
+              35.25,
+              16.4,
+              37.75,
+              19.6
+            ]
+          },
+          {
+            "type": "调光 PMOS",
+            "ch": "W",
+            "index": 1,
+            "rect": [
+              3.25,
+              12.75,
+              5.75,
+              15.75
+            ]
+          },
+          {
+            "type": "输入 1210",
+            "ch": "C",
+            "index": 3,
+            "rect": [
+              50.25,
+              0.3999999999999999,
+              52.75,
+              3.6
+            ]
+          },
+          {
+            "type": "输入 1210",
+            "ch": "W",
+            "index": 2,
+            "rect": [
+              0.25,
+              12.9,
+              2.75,
+              16.1
+            ]
+          },
+          {
+            "type": "调光 PMOS",
+            "ch": "C",
+            "index": 1,
+            "rect": [
+              50.75,
+              15.75,
+              53.25,
+              18.75
+            ]
+          },
+          {
+            "type": "输出 1210",
+            "ch": "C",
+            "index": 2,
+            "rect": [
+              50.9,
+              19.25,
+              54.1,
+              21.75
+            ]
+          }
+        ]
+      }
+    },
+    "led": {
+      "id": "led",
+      "name": "双色铝基灯板",
+      "size": [
+        66.0,
+        46.0
+      ],
+      "corner_radius": 2,
+      "thickness": 1.6,
+      "layers": 1,
+      "material": "铝基覆铜板",
+      "origin": [
+        2.299999999999997,
+        -16.1,
+        0.3999999999999999
+      ],
+      "axes": {
+        "u": [
+          1,
+          0,
+          0
+        ],
+        "v": [
+          0,
+          -1,
+          0
+        ],
+        "top": [
+          0,
+          0,
+          1
+        ]
+      },
+      "origin_surface": "BOT",
+      "holes": [
+        {
+          "ref": "H1",
+          "center": [
+            5.5,
+            7.8
+          ],
+          "drill": 2.8,
+          "keep_d": 4,
+          "kind": "M2.5",
+          "plated": false,
+          "keepout_sides": [
+            "TOP",
+            "BOTTOM"
+          ],
+          "forbid": [
+            "copper",
+            "components"
+          ]
+        },
+        {
+          "ref": "H2",
+          "center": [
+            60.5,
+            7.8
+          ],
+          "drill": 2.8,
+          "keep_d": 4,
+          "kind": "M2.5",
+          "plated": false,
+          "keepout_sides": [
+            "TOP",
+            "BOTTOM"
+          ],
+          "forbid": [
+            "copper",
+            "components"
+          ]
+        },
+        {
+          "ref": "H3",
+          "center": [
+            5.5,
+            38.2
+          ],
+          "drill": 2.8,
+          "keep_d": 4,
+          "kind": "M2.5",
+          "plated": false,
+          "keepout_sides": [
+            "TOP",
+            "BOTTOM"
+          ],
+          "forbid": [
+            "copper",
+            "components"
+          ]
+        },
+        {
+          "ref": "H4",
+          "center": [
+            60.5,
+            38.2
+          ],
+          "drill": 2.8,
+          "keep_d": 4,
+          "kind": "M2.5",
+          "plated": false,
+          "keepout_sides": [
+            "TOP",
+            "BOTTOM"
+          ],
+          "forbid": [
+            "copper",
+            "components"
+          ]
+        }
+      ],
+      "connectors": [
+        {
+          "ref": "J1",
+          "type": "六根线侧出表贴焊盘",
+          "center": [
+            45,
+            1.25
+          ],
+          "rect": [
+            37.75,
+            0.5,
+            52.25,
+            2.0
+          ],
+          "height": 1.0,
+          "pin_count": 6,
+          "pitch": 2.54,
+          "pin1": [
+            38.65,
+            1.25
+          ],
+          "pins": [
+            [
+              38.65,
+              1.25
+            ],
+            [
+              41.19,
+              1.25
+            ],
+            [
+              43.73,
+              1.25
+            ],
+            [
+              46.27,
+              1.25
+            ],
+            [
+              48.81,
+              1.25
+            ],
+            [
+              51.35,
+              1.25
+            ]
+          ],
+          "direction": [
+            0,
+            -1,
+            0
+          ],
+          "pattern": "row",
+          "nets": [
+            "LEDW_P",
+            "LEDW_N",
+            "LEDC_P",
+            "LEDC_N",
+            "NTC_LED",
+            "NTC_RTN"
+          ],
+          "status": "坐标锁定；封装/焊盘待 ECAD 按最终型号核对",
+          "node": "led_j1"
+        }
+      ],
+      "fixed": [
+        {
+          "ref": "RT1",
+          "name": "灯板测温 NTC",
+          "center": [
+            33,
+            23
+          ],
+          "rect": [
+            32.0,
+            22.375,
+            34.0,
+            23.625
+          ],
+          "height": 0.9,
+          "shape": "box",
+          "side": "TOP",
+          "node": "led_rt1"
+        }
+      ],
+      "leds": [
+        {
+          "ref": "D01",
+          "center": [
+            2.75,
+            4.0
+          ],
+          "rect": [
+            1.25,
+            2.5,
+            4.25,
+            5.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W1",
+          "order": 1,
+          "anode": [
+            1.6,
+            4.0
+          ],
+          "cathode": [
+            3.9,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D02",
+          "center": [
+            8.25,
+            4.0
+          ],
+          "rect": [
+            6.75,
+            2.5,
+            9.75,
+            5.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C1",
+          "order": 1,
+          "anode": [
+            7.1,
+            4.0
+          ],
+          "cathode": [
+            9.4,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D03",
+          "center": [
+            13.75,
+            4.0
+          ],
+          "rect": [
+            12.25,
+            2.5,
+            15.25,
+            5.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W1",
+          "order": 2,
+          "anode": [
+            12.6,
+            4.0
+          ],
+          "cathode": [
+            14.9,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D04",
+          "center": [
+            19.25,
+            4.0
+          ],
+          "rect": [
+            17.75,
+            2.5,
+            20.75,
+            5.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C1",
+          "order": 2,
+          "anode": [
+            18.1,
+            4.0
+          ],
+          "cathode": [
+            20.4,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D05",
+          "center": [
+            24.75,
+            4.0
+          ],
+          "rect": [
+            23.25,
+            2.5,
+            26.25,
+            5.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W1",
+          "order": 3,
+          "anode": [
+            23.6,
+            4.0
+          ],
+          "cathode": [
+            25.9,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D06",
+          "center": [
+            30.25,
+            4.0
+          ],
+          "rect": [
+            28.75,
+            2.5,
+            31.75,
+            5.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C1",
+          "order": 3,
+          "anode": [
+            29.1,
+            4.0
+          ],
+          "cathode": [
+            31.4,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D07",
+          "center": [
+            35.75,
+            4.0
+          ],
+          "rect": [
+            34.25,
+            2.5,
+            37.25,
+            5.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W1",
+          "order": 4,
+          "anode": [
+            34.6,
+            4.0
+          ],
+          "cathode": [
+            36.9,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D08",
+          "center": [
+            41.25,
+            4.0
+          ],
+          "rect": [
+            39.75,
+            2.5,
+            42.75,
+            5.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C1",
+          "order": 4,
+          "anode": [
+            40.1,
+            4.0
+          ],
+          "cathode": [
+            42.4,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D09",
+          "center": [
+            46.75,
+            4.0
+          ],
+          "rect": [
+            45.25,
+            2.5,
+            48.25,
+            5.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W1",
+          "order": 5,
+          "anode": [
+            45.6,
+            4.0
+          ],
+          "cathode": [
+            47.9,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D10",
+          "center": [
+            52.25,
+            4.0
+          ],
+          "rect": [
+            50.75,
+            2.5,
+            53.75,
+            5.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C1",
+          "order": 5,
+          "anode": [
+            51.1,
+            4.0
+          ],
+          "cathode": [
+            53.4,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D11",
+          "center": [
+            57.75,
+            4.0
+          ],
+          "rect": [
+            56.25,
+            2.5,
+            59.25,
+            5.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W1",
+          "order": 6,
+          "anode": [
+            56.6,
+            4.0
+          ],
+          "cathode": [
+            58.9,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D12",
+          "center": [
+            63.25,
+            4.0
+          ],
+          "rect": [
+            61.75,
+            2.5,
+            64.75,
+            5.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C1",
+          "order": 6,
+          "anode": [
+            62.1,
+            4.0
+          ],
+          "cathode": [
+            64.4,
+            4.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D13",
+          "center": [
+            2.75,
+            11.6
+          ],
+          "rect": [
+            1.25,
+            10.1,
+            4.25,
+            13.1
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C2",
+          "order": 6,
+          "anode": [
+            3.9,
+            11.6
+          ],
+          "cathode": [
+            1.6,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D14",
+          "center": [
+            8.25,
+            11.6
+          ],
+          "rect": [
+            6.75,
+            10.1,
+            9.75,
+            13.1
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W2",
+          "order": 6,
+          "anode": [
+            9.4,
+            11.6
+          ],
+          "cathode": [
+            7.1,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D15",
+          "center": [
+            13.75,
+            11.6
+          ],
+          "rect": [
+            12.25,
+            10.1,
+            15.25,
+            13.1
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C2",
+          "order": 5,
+          "anode": [
+            14.9,
+            11.6
+          ],
+          "cathode": [
+            12.6,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D16",
+          "center": [
+            19.25,
+            11.6
+          ],
+          "rect": [
+            17.75,
+            10.1,
+            20.75,
+            13.1
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W2",
+          "order": 5,
+          "anode": [
+            20.4,
+            11.6
+          ],
+          "cathode": [
+            18.1,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D17",
+          "center": [
+            24.75,
+            11.6
+          ],
+          "rect": [
+            23.25,
+            10.1,
+            26.25,
+            13.1
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C2",
+          "order": 4,
+          "anode": [
+            25.9,
+            11.6
+          ],
+          "cathode": [
+            23.6,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D18",
+          "center": [
+            30.25,
+            11.6
+          ],
+          "rect": [
+            28.75,
+            10.1,
+            31.75,
+            13.1
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W2",
+          "order": 4,
+          "anode": [
+            31.4,
+            11.6
+          ],
+          "cathode": [
+            29.1,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D19",
+          "center": [
+            35.75,
+            11.6
+          ],
+          "rect": [
+            34.25,
+            10.1,
+            37.25,
+            13.1
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C2",
+          "order": 3,
+          "anode": [
+            36.9,
+            11.6
+          ],
+          "cathode": [
+            34.6,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D20",
+          "center": [
+            41.25,
+            11.6
+          ],
+          "rect": [
+            39.75,
+            10.1,
+            42.75,
+            13.1
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W2",
+          "order": 3,
+          "anode": [
+            42.4,
+            11.6
+          ],
+          "cathode": [
+            40.1,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D21",
+          "center": [
+            46.75,
+            11.6
+          ],
+          "rect": [
+            45.25,
+            10.1,
+            48.25,
+            13.1
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C2",
+          "order": 2,
+          "anode": [
+            47.9,
+            11.6
+          ],
+          "cathode": [
+            45.6,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D22",
+          "center": [
+            52.25,
+            11.6
+          ],
+          "rect": [
+            50.75,
+            10.1,
+            53.75,
+            13.1
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W2",
+          "order": 2,
+          "anode": [
+            53.4,
+            11.6
+          ],
+          "cathode": [
+            51.1,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D23",
+          "center": [
+            57.75,
+            11.6
+          ],
+          "rect": [
+            56.25,
+            10.1,
+            59.25,
+            13.1
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C2",
+          "order": 1,
+          "anode": [
+            58.9,
+            11.6
+          ],
+          "cathode": [
+            56.6,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D24",
+          "center": [
+            63.25,
+            11.6
+          ],
+          "rect": [
+            61.75,
+            10.1,
+            64.75,
+            13.1
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W2",
+          "order": 1,
+          "anode": [
+            64.4,
+            11.6
+          ],
+          "cathode": [
+            62.1,
+            11.6
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D25",
+          "center": [
+            2.75,
+            19.2
+          ],
+          "rect": [
+            1.25,
+            17.7,
+            4.25,
+            20.7
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W3",
+          "order": 1,
+          "anode": [
+            1.6,
+            19.2
+          ],
+          "cathode": [
+            3.9,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D26",
+          "center": [
+            8.25,
+            19.2
+          ],
+          "rect": [
+            6.75,
+            17.7,
+            9.75,
+            20.7
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C3",
+          "order": 1,
+          "anode": [
+            7.1,
+            19.2
+          ],
+          "cathode": [
+            9.4,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D27",
+          "center": [
+            13.75,
+            19.2
+          ],
+          "rect": [
+            12.25,
+            17.7,
+            15.25,
+            20.7
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W3",
+          "order": 2,
+          "anode": [
+            12.6,
+            19.2
+          ],
+          "cathode": [
+            14.9,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D28",
+          "center": [
+            19.25,
+            19.2
+          ],
+          "rect": [
+            17.75,
+            17.7,
+            20.75,
+            20.7
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C3",
+          "order": 2,
+          "anode": [
+            18.1,
+            19.2
+          ],
+          "cathode": [
+            20.4,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D29",
+          "center": [
+            24.75,
+            19.2
+          ],
+          "rect": [
+            23.25,
+            17.7,
+            26.25,
+            20.7
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W3",
+          "order": 3,
+          "anode": [
+            23.6,
+            19.2
+          ],
+          "cathode": [
+            25.9,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D30",
+          "center": [
+            30.25,
+            19.2
+          ],
+          "rect": [
+            28.75,
+            17.7,
+            31.75,
+            20.7
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C3",
+          "order": 3,
+          "anode": [
+            29.1,
+            19.2
+          ],
+          "cathode": [
+            31.4,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D31",
+          "center": [
+            35.75,
+            19.2
+          ],
+          "rect": [
+            34.25,
+            17.7,
+            37.25,
+            20.7
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W3",
+          "order": 4,
+          "anode": [
+            34.6,
+            19.2
+          ],
+          "cathode": [
+            36.9,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D32",
+          "center": [
+            41.25,
+            19.2
+          ],
+          "rect": [
+            39.75,
+            17.7,
+            42.75,
+            20.7
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C3",
+          "order": 4,
+          "anode": [
+            40.1,
+            19.2
+          ],
+          "cathode": [
+            42.4,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D33",
+          "center": [
+            46.75,
+            19.2
+          ],
+          "rect": [
+            45.25,
+            17.7,
+            48.25,
+            20.7
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W3",
+          "order": 5,
+          "anode": [
+            45.6,
+            19.2
+          ],
+          "cathode": [
+            47.9,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D34",
+          "center": [
+            52.25,
+            19.2
+          ],
+          "rect": [
+            50.75,
+            17.7,
+            53.75,
+            20.7
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C3",
+          "order": 5,
+          "anode": [
+            51.1,
+            19.2
+          ],
+          "cathode": [
+            53.4,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D35",
+          "center": [
+            57.75,
+            19.2
+          ],
+          "rect": [
+            56.25,
+            17.7,
+            59.25,
+            20.7
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W3",
+          "order": 6,
+          "anode": [
+            56.6,
+            19.2
+          ],
+          "cathode": [
+            58.9,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D36",
+          "center": [
+            63.25,
+            19.2
+          ],
+          "rect": [
+            61.75,
+            17.7,
+            64.75,
+            20.7
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C3",
+          "order": 6,
+          "anode": [
+            62.1,
+            19.2
+          ],
+          "cathode": [
+            64.4,
+            19.2
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D37",
+          "center": [
+            2.75,
+            26.8
+          ],
+          "rect": [
+            1.25,
+            25.3,
+            4.25,
+            28.3
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C4",
+          "order": 6,
+          "anode": [
+            3.9,
+            26.8
+          ],
+          "cathode": [
+            1.6,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D38",
+          "center": [
+            8.25,
+            26.8
+          ],
+          "rect": [
+            6.75,
+            25.3,
+            9.75,
+            28.3
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W4",
+          "order": 6,
+          "anode": [
+            9.4,
+            26.8
+          ],
+          "cathode": [
+            7.1,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D39",
+          "center": [
+            13.75,
+            26.8
+          ],
+          "rect": [
+            12.25,
+            25.3,
+            15.25,
+            28.3
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C4",
+          "order": 5,
+          "anode": [
+            14.9,
+            26.8
+          ],
+          "cathode": [
+            12.6,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D40",
+          "center": [
+            19.25,
+            26.8
+          ],
+          "rect": [
+            17.75,
+            25.3,
+            20.75,
+            28.3
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W4",
+          "order": 5,
+          "anode": [
+            20.4,
+            26.8
+          ],
+          "cathode": [
+            18.1,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D41",
+          "center": [
+            24.75,
+            26.8
+          ],
+          "rect": [
+            23.25,
+            25.3,
+            26.25,
+            28.3
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C4",
+          "order": 4,
+          "anode": [
+            25.9,
+            26.8
+          ],
+          "cathode": [
+            23.6,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D42",
+          "center": [
+            30.25,
+            26.8
+          ],
+          "rect": [
+            28.75,
+            25.3,
+            31.75,
+            28.3
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W4",
+          "order": 4,
+          "anode": [
+            31.4,
+            26.8
+          ],
+          "cathode": [
+            29.1,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D43",
+          "center": [
+            35.75,
+            26.8
+          ],
+          "rect": [
+            34.25,
+            25.3,
+            37.25,
+            28.3
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C4",
+          "order": 3,
+          "anode": [
+            36.9,
+            26.8
+          ],
+          "cathode": [
+            34.6,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D44",
+          "center": [
+            41.25,
+            26.8
+          ],
+          "rect": [
+            39.75,
+            25.3,
+            42.75,
+            28.3
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W4",
+          "order": 3,
+          "anode": [
+            42.4,
+            26.8
+          ],
+          "cathode": [
+            40.1,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D45",
+          "center": [
+            46.75,
+            26.8
+          ],
+          "rect": [
+            45.25,
+            25.3,
+            48.25,
+            28.3
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C4",
+          "order": 2,
+          "anode": [
+            47.9,
+            26.8
+          ],
+          "cathode": [
+            45.6,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D46",
+          "center": [
+            52.25,
+            26.8
+          ],
+          "rect": [
+            50.75,
+            25.3,
+            53.75,
+            28.3
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W4",
+          "order": 2,
+          "anode": [
+            53.4,
+            26.8
+          ],
+          "cathode": [
+            51.1,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D47",
+          "center": [
+            57.75,
+            26.8
+          ],
+          "rect": [
+            56.25,
+            25.3,
+            59.25,
+            28.3
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C4",
+          "order": 1,
+          "anode": [
+            58.9,
+            26.8
+          ],
+          "cathode": [
+            56.6,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D48",
+          "center": [
+            63.25,
+            26.8
+          ],
+          "rect": [
+            61.75,
+            25.3,
+            64.75,
+            28.3
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W4",
+          "order": 1,
+          "anode": [
+            64.4,
+            26.8
+          ],
+          "cathode": [
+            62.1,
+            26.8
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D49",
+          "center": [
+            2.75,
+            34.4
+          ],
+          "rect": [
+            1.25,
+            32.9,
+            4.25,
+            35.9
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W5",
+          "order": 1,
+          "anode": [
+            1.6,
+            34.4
+          ],
+          "cathode": [
+            3.9,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D50",
+          "center": [
+            8.25,
+            34.4
+          ],
+          "rect": [
+            6.75,
+            32.9,
+            9.75,
+            35.9
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C5",
+          "order": 1,
+          "anode": [
+            7.1,
+            34.4
+          ],
+          "cathode": [
+            9.4,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D51",
+          "center": [
+            13.75,
+            34.4
+          ],
+          "rect": [
+            12.25,
+            32.9,
+            15.25,
+            35.9
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W5",
+          "order": 2,
+          "anode": [
+            12.6,
+            34.4
+          ],
+          "cathode": [
+            14.9,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D52",
+          "center": [
+            19.25,
+            34.4
+          ],
+          "rect": [
+            17.75,
+            32.9,
+            20.75,
+            35.9
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C5",
+          "order": 2,
+          "anode": [
+            18.1,
+            34.4
+          ],
+          "cathode": [
+            20.4,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D53",
+          "center": [
+            24.75,
+            34.4
+          ],
+          "rect": [
+            23.25,
+            32.9,
+            26.25,
+            35.9
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W5",
+          "order": 3,
+          "anode": [
+            23.6,
+            34.4
+          ],
+          "cathode": [
+            25.9,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D54",
+          "center": [
+            30.25,
+            34.4
+          ],
+          "rect": [
+            28.75,
+            32.9,
+            31.75,
+            35.9
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C5",
+          "order": 3,
+          "anode": [
+            29.1,
+            34.4
+          ],
+          "cathode": [
+            31.4,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D55",
+          "center": [
+            35.75,
+            34.4
+          ],
+          "rect": [
+            34.25,
+            32.9,
+            37.25,
+            35.9
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W5",
+          "order": 4,
+          "anode": [
+            34.6,
+            34.4
+          ],
+          "cathode": [
+            36.9,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D56",
+          "center": [
+            41.25,
+            34.4
+          ],
+          "rect": [
+            39.75,
+            32.9,
+            42.75,
+            35.9
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C5",
+          "order": 4,
+          "anode": [
+            40.1,
+            34.4
+          ],
+          "cathode": [
+            42.4,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D57",
+          "center": [
+            46.75,
+            34.4
+          ],
+          "rect": [
+            45.25,
+            32.9,
+            48.25,
+            35.9
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W5",
+          "order": 5,
+          "anode": [
+            45.6,
+            34.4
+          ],
+          "cathode": [
+            47.9,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D58",
+          "center": [
+            52.25,
+            34.4
+          ],
+          "rect": [
+            50.75,
+            32.9,
+            53.75,
+            35.9
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C5",
+          "order": 5,
+          "anode": [
+            51.1,
+            34.4
+          ],
+          "cathode": [
+            53.4,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D59",
+          "center": [
+            57.75,
+            34.4
+          ],
+          "rect": [
+            56.25,
+            32.9,
+            59.25,
+            35.9
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W5",
+          "order": 6,
+          "anode": [
+            56.6,
+            34.4
+          ],
+          "cathode": [
+            58.9,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D60",
+          "center": [
+            63.25,
+            34.4
+          ],
+          "rect": [
+            61.75,
+            32.9,
+            64.75,
+            35.9
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C5",
+          "order": 6,
+          "anode": [
+            62.1,
+            34.4
+          ],
+          "cathode": [
+            64.4,
+            34.4
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D61",
+          "center": [
+            2.75,
+            42.0
+          ],
+          "rect": [
+            1.25,
+            40.5,
+            4.25,
+            43.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C6",
+          "order": 6,
+          "anode": [
+            3.9,
+            42.0
+          ],
+          "cathode": [
+            1.6,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D62",
+          "center": [
+            8.25,
+            42.0
+          ],
+          "rect": [
+            6.75,
+            40.5,
+            9.75,
+            43.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W6",
+          "order": 6,
+          "anode": [
+            9.4,
+            42.0
+          ],
+          "cathode": [
+            7.1,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D63",
+          "center": [
+            13.75,
+            42.0
+          ],
+          "rect": [
+            12.25,
+            40.5,
+            15.25,
+            43.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C6",
+          "order": 5,
+          "anode": [
+            14.9,
+            42.0
+          ],
+          "cathode": [
+            12.6,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D64",
+          "center": [
+            19.25,
+            42.0
+          ],
+          "rect": [
+            17.75,
+            40.5,
+            20.75,
+            43.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W6",
+          "order": 5,
+          "anode": [
+            20.4,
+            42.0
+          ],
+          "cathode": [
+            18.1,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D65",
+          "center": [
+            24.75,
+            42.0
+          ],
+          "rect": [
+            23.25,
+            40.5,
+            26.25,
+            43.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C6",
+          "order": 4,
+          "anode": [
+            25.9,
+            42.0
+          ],
+          "cathode": [
+            23.6,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D66",
+          "center": [
+            30.25,
+            42.0
+          ],
+          "rect": [
+            28.75,
+            40.5,
+            31.75,
+            43.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W6",
+          "order": 4,
+          "anode": [
+            31.4,
+            42.0
+          ],
+          "cathode": [
+            29.1,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D67",
+          "center": [
+            35.75,
+            42.0
+          ],
+          "rect": [
+            34.25,
+            40.5,
+            37.25,
+            43.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C6",
+          "order": 3,
+          "anode": [
+            36.9,
+            42.0
+          ],
+          "cathode": [
+            34.6,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D68",
+          "center": [
+            41.25,
+            42.0
+          ],
+          "rect": [
+            39.75,
+            40.5,
+            42.75,
+            43.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W6",
+          "order": 3,
+          "anode": [
+            42.4,
+            42.0
+          ],
+          "cathode": [
+            40.1,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D69",
+          "center": [
+            46.75,
+            42.0
+          ],
+          "rect": [
+            45.25,
+            40.5,
+            48.25,
+            43.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C6",
+          "order": 2,
+          "anode": [
+            47.9,
+            42.0
+          ],
+          "cathode": [
+            45.6,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D70",
+          "center": [
+            52.25,
+            42.0
+          ],
+          "rect": [
+            50.75,
+            40.5,
+            53.75,
+            43.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W6",
+          "order": 2,
+          "anode": [
+            53.4,
+            42.0
+          ],
+          "cathode": [
+            51.1,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D71",
+          "center": [
+            57.75,
+            42.0
+          ],
+          "rect": [
+            56.25,
+            40.5,
+            59.25,
+            43.5
+          ],
+          "color": "C",
+          "kelvin": 6500,
+          "string": "C6",
+          "order": 1,
+          "anode": [
+            58.9,
+            42.0
+          ],
+          "cathode": [
+            56.6,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        },
+        {
+          "ref": "D72",
+          "center": [
+            63.25,
+            42.0
+          ],
+          "rect": [
+            61.75,
+            40.5,
+            64.75,
+            43.5
+          ],
+          "color": "W",
+          "kelvin": 2700,
+          "string": "W6",
+          "order": 1,
+          "anode": [
+            64.4,
+            42.0
+          ],
+          "cathode": [
+            62.1,
+            42.0
+          ],
+          "height": 1.0,
+          "mpn": "YJ-BC-3030-G04"
+        }
+      ],
+      "keepouts": [
+        {
+          "id": "LIP0",
+          "side": "TOP",
+          "rect": [
+            0,
+            0.5,
+            0.8,
+            45.5
+          ],
+          "why": "侧压边筋，不布器件",
+          "mode": "no_parts"
+        },
+        {
+          "id": "LIP65",
+          "side": "TOP",
+          "rect": [
+            65.2,
+            0.5,
+            66.0,
+            45.5
+          ],
+          "why": "侧压边筋，不布器件",
+          "mode": "no_parts"
+        },
+        {
+          "id": "THERMAL",
+          "side": "BOTTOM",
+          "rect": [
+            0,
+            0,
+            66.0,
+            46.0
+          ],
+          "why": "整个铝背贴合散热器：不放器件、端子或焊脚",
+          "mode": "no_parts"
+        }
+      ],
+      "height_zones": [
+        {
+          "id": "BASE",
+          "rect": [
+            0,
+            0,
+            66.0,
+            46.0
+          ],
+          "top": 1.0,
+          "bot": 0,
+          "why": "通用工作限高；局部覆盖区优先，禁布区始终优先"
+        }
+      ]
+    }
+  },
+  "remote_parts": [
+    {
+      "ref": "NTC1",
+      "name": "电芯 1 贴片探头",
+      "board": "main",
+      "port": "J5",
+      "xyz": [
+        35.300000000000004,
+        68.9,
+        25.4
+      ],
+      "size": [
+        3,
+        1.5,
+        0.5
+      ],
+      "normal": [
+        0,
+        0,
+        1
+      ],
+      "nets": [
+        "NTC1",
+        "NTC_RTN"
+      ]
+    },
+    {
+      "ref": "NTC2",
+      "name": "电芯 2 贴片探头",
+      "board": "main",
+      "port": "J5",
+      "xyz": [
+        35.300000000000004,
+        91.3,
+        25.4
+      ],
+      "size": [
+        3,
+        1.5,
+        0.5
+      ],
+      "normal": [
+        0,
+        0,
+        1
+      ],
+      "nets": [
+        "NTC2",
+        "NTC_RTN"
+      ]
+    },
+    {
+      "ref": "TS85",
+      "name": "85°C 常闭热开关占位",
+      "board": "driver",
+      "port": "J5",
+      "xyz": [
+        10.5,
+        -32,
+        -5.800000000000001
+      ],
+      "size": [
+        7,
+        8,
+        4.5
+      ],
+      "normal": [
+        0,
+        0,
+        -1
+      ],
+      "nets": [
+        "DRV_EN_IN",
+        "DRV_EN_SAFE"
+      ]
+    }
+  ],
+  "project_axes": "从背面看 X右、Y下、Z朝被摄物；原点左上背玻璃",
+  "step_axes": "(X,-Y,Z) mm",
+  "rect_format": "[umin,vmin,umax,vmax]，高度从各自板面起；分区覆盖 BASE，禁布优先",
+  "routes": {
+    "trunk_x": 50.800000000000004,
+    "gauge_wh": [
+      6.85,
+      2.4
+    ],
+    "entry_gauge_wh": [
+      6.85,
+      2.2
+    ],
+    "entry_centerline_y": [
+      50,
+      65
+    ],
+    "pod_trunk_x": 54.55,
+    "pod_cover_x": [
+      50.1,
+      58.0
+    ],
+    "bend_center_radius": 5,
+    "power": [
+      "VSYS",
+      "VSYS",
+      "GND",
+      "GND"
+    ],
+    "twists": [
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        4
+      ]
+    ],
+    "signal": [
+      "GND",
+      "DIM_W",
+      "DIM_C",
+      "DRV_EN",
+      "DRV_FLT",
+      "FAN_PWM",
+      "FAN_TACH",
+      "NTC_LED"
+    ],
+    "centerline_xyz": [
+      [
+        50.8,
+        -32.0,
+        -12.8
+      ],
+      [
+        50.8,
+        -19.65,
+        -12.8
+      ],
+      [
+        50.8,
+        -19.48640458589112,
+        -12.797322937381828
+      ],
+      [
+        50.8,
+        -19.322984353849286,
+        -12.789294616193018
+      ],
+      [
+        50.8,
+        -19.1599142983522,
+        -12.775923633360986
+      ],
+      [
+        50.8,
+        -18.99736903889974,
+        -12.757224306869052
+      ],
+      [
+        50.8,
+        -18.835522633027054,
+        -12.733216660424395
+      ],
+      [
+        50.8,
+        -18.67454838991936,
+        -12.703926402016151
+      ],
+      [
+        50.8,
+        -18.514618684828132,
+        -12.669384896386667
+      ],
+      [
+        50.8,
+        -18.355904774487396,
+        -12.629629131445341
+      ],
+      [
+        50.8,
+        -18.19857661372769,
+        -12.584701678661045
+      ],
+      [
+        50.8,
+        -18.042802673484193,
+        -12.534650647475527
+      ],
+      [
+        50.8,
+        -17.888749760393832,
+        -12.479529633786628
+      ],
+      [
+        50.8,
+        -17.736582838174552,
+        -12.419397662556435
+      ],
+      [
+        50.8,
+        -17.586464850978025,
+        -12.35431912460588
+      ],
+      [
+        50.8,
+        -17.438556548904995,
+        -12.284363707663442
+      ],
+      [
+        50.8,
+        -17.293016315870013,
+        -12.209606321741775
+      ],
+      [
+        50.8,
+        -17.15,
+        -12.130127018922192
+      ],
+      [
+        50.8,
+        -17.00966074674816,
+        -12.046010907632894
+      ],
+      [
+        50.8,
+        -16.87214883490199,
+        -11.957348061512725
+      ],
+      [
+        50.8,
+        -16.73761151566099,
+        -11.864233422958076
+      ],
+      [
+        50.8,
+        -16.606192854956397,
+        -11.766766701456175
+      ],
+      [
+        50.8,
+        -16.478033579181773,
+        -11.665052266813685
+      ],
+      [
+        50.8,
+        -16.353270924499657,
+        -11.559199037394887
+      ],
+      [
+        50.8,
+        -16.232038489885646,
+        -11.449320363489178
+      ],
+      [
+        50.8,
+        -16.11446609406726,
+        -11.335533905932737
+      ],
+      [
+        50.8,
+        -16.00067963651082,
+        -11.217961510114357
+      ],
+      [
+        50.8,
+        -15.890800962605113,
+        -11.096729075500344
+      ],
+      [
+        50.8,
+        -15.784947733186316,
+        -10.971966420818227
+      ],
+      [
+        50.8,
+        -15.683233298543824,
+        -10.843807145043602
+      ],
+      [
+        50.8,
+        -15.585766577041925,
+        -10.71238848433901
+      ],
+      [
+        50.8,
+        -15.492651938487274,
+        -10.57785116509801
+      ],
+      [
+        50.8,
+        -15.403989092367105,
+        -10.440339253251839
+      ],
+      [
+        50.8,
+        -15.319872981077808,
+        -10.299999999999999
+      ],
+      [
+        50.8,
+        -15.240393678258226,
+        -10.156983684129987
+      ],
+      [
+        50.8,
+        -15.165636292336558,
+        -10.011443451095007
+      ],
+      [
+        50.8,
+        -15.095680875394121,
+        -9.863535149021974
+      ],
+      [
+        50.8,
+        -15.030602337443566,
+        -9.713417161825449
+      ],
+      [
+        50.8,
+        -14.970470366213371,
+        -9.561250239606167
+      ],
+      [
+        50.8,
+        -14.915349352524473,
+        -9.407197326515808
+      ],
+      [
+        50.8,
+        -14.865298321338956,
+        -9.251423386272311
+      ],
+      [
+        50.8,
+        -14.820370868554658,
+        -9.094095225512604
+      ],
+      [
+        50.8,
+        -14.780615103613332,
+        -8.935381315171865
+      ],
+      [
+        50.8,
+        -14.746073597983848,
+        -8.77545161008064
+      ],
+      [
+        50.8,
+        -14.716783339575606,
+        -8.614477366972944
+      ],
+      [
+        50.8,
+        -14.69277569313095,
+        -8.452630961100258
+      ],
+      [
+        50.8,
+        -14.674076366639015,
+        -8.290085701647802
+      ],
+      [
+        50.8,
+        -14.660705383806983,
+        -8.127015646150715
+      ],
+      [
+        50.8,
+        -14.652677062618173,
+        -7.96359541410888
+      ],
+      [
+        50.8,
+        -14.65,
+        -7.8
+      ],
+      [
+        50.8,
+        -14.65,
+        1.4000000000000006
+      ],
+      [
+        50.8,
+        -14.64732293738183,
+        1.5635954141088813
+      ],
+      [
+        50.8,
+        -14.639294616193018,
+        1.7270156461507167
+      ],
+      [
+        50.8,
+        -14.625923633360985,
+        1.890085701647803
+      ],
+      [
+        50.8,
+        -14.607224306869053,
+        2.0526309611002587
+      ],
+      [
+        50.8,
+        -14.583216660424394,
+        2.2144773669729445
+      ],
+      [
+        50.8,
+        -14.553926402016153,
+        2.375451610080642
+      ],
+      [
+        50.8,
+        -14.519384896386669,
+        2.5353813151718674
+      ],
+      [
+        50.8,
+        -14.479629131445343,
+        2.694095225512604
+      ],
+      [
+        50.8,
+        -14.434701678661044,
+        2.851423386272313
+      ],
+      [
+        50.8,
+        -14.384650647475528,
+        3.0071973265158087
+      ],
+      [
+        50.8,
+        -14.329529633786628,
+        3.1612502396061686
+      ],
+      [
+        50.8,
+        -14.269397662556434,
+        3.3134171618254493
+      ],
+      [
+        50.8,
+        -14.20431912460588,
+        3.463535149021974
+      ],
+      [
+        50.8,
+        -14.134363707663443,
+        3.6114434510950066
+      ],
+      [
+        50.8,
+        -14.059606321741775,
+        3.756983684129988
+      ],
+      [
+        50.8,
+        -13.980127018922193,
+        3.900000000000001
+      ],
+      [
+        50.8,
+        -13.896010907632895,
+        4.04033925325184
+      ],
+      [
+        50.8,
+        -13.807348061512727,
+        4.177851165098012
+      ],
+      [
+        50.8,
+        -13.714233422958078,
+        4.312388484339011
+      ],
+      [
+        50.8,
+        -13.616766701456175,
+        4.443807145043603
+      ],
+      [
+        50.8,
+        -13.515052266813685,
+        4.571966420818228
+      ],
+      [
+        50.8,
+        -13.409199037394888,
+        4.696729075500345
+      ],
+      [
+        50.8,
+        -13.299320363489178,
+        4.8179615101143565
+      ],
+      [
+        50.8,
+        -13.185533905932738,
+        4.935533905932738
+      ],
+      [
+        50.8,
+        -13.067961510114356,
+        5.049320363489179
+      ],
+      [
+        50.8,
+        -12.946729075500345,
+        5.159199037394888
+      ],
+      [
+        50.8,
+        -12.821966420818228,
+        5.265052266813685
+      ],
+      [
+        50.8,
+        -12.693807145043603,
+        5.366766701456176
+      ],
+      [
+        50.8,
+        -12.56238848433901,
+        5.464233422958077
+      ],
+      [
+        50.8,
+        -12.427851165098012,
+        5.557348061512727
+      ],
+      [
+        50.8,
+        -12.29033925325184,
+        5.646010907632895
+      ],
+      [
+        50.8,
+        -12.15,
+        5.730127018922194
+      ],
+      [
+        50.8,
+        -12.006983684129988,
+        5.809606321741776
+      ],
+      [
+        50.8,
+        -11.861443451095006,
+        5.884363707663442
+      ],
+      [
+        50.8,
+        -11.713535149021974,
+        5.954319124605879
+      ],
+      [
+        50.8,
+        -11.563417161825448,
+        6.019397662556434
+      ],
+      [
+        50.8,
+        -11.411250239606169,
+        6.079529633786629
+      ],
+      [
+        50.8,
+        -11.257197326515808,
+        6.134650647475529
+      ],
+      [
+        50.8,
+        -11.101423386272312,
+        6.184701678661044
+      ],
+      [
+        50.8,
+        -10.944095225512605,
+        6.229629131445342
+      ],
+      [
+        50.8,
+        -10.785381315171866,
+        6.2693848963866685
+      ],
+      [
+        50.8,
+        -10.625451610080642,
+        6.3039264020161525
+      ],
+      [
+        50.8,
+        -10.464477366972943,
+        6.333216660424395
+      ],
+      [
+        50.8,
+        -10.302630961100258,
+        6.357224306869052
+      ],
+      [
+        50.8,
+        -10.140085701647804,
+        6.375923633360985
+      ],
+      [
+        50.8,
+        -9.977015646150715,
+        6.389294616193018
+      ],
+      [
+        50.8,
+        -9.813595414108882,
+        6.397322937381829
+      ],
+      [
+        50.8,
+        -9.65,
+        6.4
+      ],
+      [
+        50.8,
+        15.0,
+        6.4
+      ],
+      [
+        50.81075744628906,
+        15.71875,
+        6.4
+      ],
+      [
+        50.8421142578125,
+        16.4375,
+        6.4
+      ],
+      [
+        50.892697143554685,
+        17.15625,
+        6.4
+      ],
+      [
+        50.9611328125,
+        17.875,
+        6.4
+      ],
+      [
+        51.04604797363281,
+        18.59375,
+        6.4
+      ],
+      [
+        51.1460693359375,
+        19.3125,
+        6.4
+      ],
+      [
+        51.259823608398435,
+        20.03125,
+        6.4
+      ],
+      [
+        51.3859375,
+        20.75,
+        6.4
+      ],
+      [
+        51.52303771972656,
+        21.46875,
+        6.4
+      ],
+      [
+        51.6697509765625,
+        22.1875,
+        6.4
+      ],
+      [
+        51.824703979492185,
+        22.90625,
+        6.4
+      ],
+      [
+        51.9865234375,
+        23.625,
+        6.4
+      ],
+      [
+        52.15383605957031,
+        24.34375,
+        6.4
+      ],
+      [
+        52.3252685546875,
+        25.0625,
+        6.4
+      ],
+      [
+        52.499447631835935,
+        25.78125,
+        6.4
+      ],
+      [
+        52.675,
+        26.5,
+        6.4
+      ],
+      [
+        52.85055236816406,
+        27.21875,
+        6.4
+      ],
+      [
+        53.0247314453125,
+        27.9375,
+        6.4
+      ],
+      [
+        53.196163940429685,
+        28.65625,
+        6.4
+      ],
+      [
+        53.3634765625,
+        29.375,
+        6.4
+      ],
+      [
+        53.52529602050781,
+        30.09375,
+        6.4
+      ],
+      [
+        53.6802490234375,
+        30.8125,
+        6.4
+      ],
+      [
+        53.826962280273435,
+        31.53125,
+        6.4
+      ],
+      [
+        53.9640625,
+        32.25,
+        6.4
+      ],
+      [
+        54.09017639160156,
+        32.96875,
+        6.4
+      ],
+      [
+        54.2039306640625,
+        33.6875,
+        6.4
+      ],
+      [
+        54.303952026367185,
+        34.40625,
+        6.4
+      ],
+      [
+        54.3888671875,
+        35.125,
+        6.4
+      ],
+      [
+        54.45730285644531,
+        35.84375,
+        6.4
+      ],
+      [
+        54.5078857421875,
+        36.5625,
+        6.4
+      ],
+      [
+        54.539242553710935,
+        37.28125,
+        6.4
+      ],
+      [
+        54.55,
+        38.0,
+        6.4
+      ],
+      [
+        54.55,
+        51.70327839604995,
+        6.3999999999999995
+      ],
+      [
+        54.55,
+        51.88619135692672,
+        6.403157275438197
+      ],
+      [
+        54.55,
+        52.06888639078511,
+        6.412625340096869
+      ],
+      [
+        54.55,
+        52.251145830250366,
+        6.42839291348998
+      ],
+      [
+        54.55,
+        52.43275252692567,
+        6.450441209741229
+      ],
+      [
+        54.55,
+        52.61349011010806,
+        6.478743959966012
+      ],
+      [
+        54.55,
+        52.79314324457787,
+        6.513267443568809
+      ],
+      [
+        54.55,
+        52.971497887154385,
+        6.5539705284187475
+      ],
+      [
+        54.55,
+        53.14834154171222,
+        6.600804719855428
+      ],
+      [
+        54.55,
+        53.323463512354415,
+        6.653714218466664
+      ],
+      [
+        54.55,
+        53.496655154440745,
+        6.712635986569283
+      ],
+      [
+        54.55,
+        53.66771012317209,
+        6.777499823313772
+      ],
+      [
+        54.55,
+        53.83642461943474,
+        6.84822844832331
+      ],
+      [
+        54.55,
+        54.00259763261165,
+        6.924737593767509
+      ],
+      [
+        54.55,
+        54.16603118007153,
+        7.0069361047612
+      ],
+      [
+        54.55,
+        54.32653054305014,
+        7.094726047968599
+      ],
+      [
+        54.55,
+        54.48390449864312,
+        7.188002828283516
+      ],
+      [
+        54.55,
+        54.637965547633634,
+        7.2866553134465395
+      ],
+      [
+        54.55,
+        54.78853013788358,
+        7.390565966450753
+      ],
+      [
+        54.55,
+        54.935418883022166,
+        7.499610985578235
+      ],
+      [
+        54.55,
+        55.07845677617118,
+        7.613660451900474
+      ],
+      [
+        54.55,
+        55.21747339845262,
+        7.732578484066997
+      ],
+      [
+        54.55,
+        55.35230312202986,
+        7.85622340019776
+      ],
+      [
+        54.55,
+        55.48278530744079,
+        7.9844478866864375
+      ],
+      [
+        54.55,
+        55.60876449498764,
+        8.117099173713497
+      ],
+      [
+        54.55,
+        55.730090589955466,
+        8.254019217259927
+      ],
+      [
+        54.55,
+        55.84661904143874,
+        8.39504488740479
+      ],
+      [
+        54.55,
+        55.95821101456286,
+        8.540008162682236
+      ],
+      [
+        54.55,
+        56.06473355589542,
+        8.688736330266424
+      ],
+      [
+        54.55,
+        56.166059751850256,
+        8.841052191745852
+      ],
+      [
+        54.55,
+        56.26206887989539,
+        8.996774274241922
+      ],
+      [
+        54.55,
+        56.35264655238485,
+        9.155717046620191
+      ],
+      [
+        54.55,
+        56.43768485284293,
+        9.317691140536777
+      ],
+      [
+        54.55,
+        56.51708246453857,
+        9.48250357605645
+      ],
+      [
+        54.55,
+        56.59074479119658,
+        9.649957991573713
+      ],
+      [
+        54.55,
+        56.658584069701966,
+        9.819854877762852
+      ],
+      [
+        54.55,
+        56.72051947466314,
+        9.99199181527829
+      ],
+      [
+        54.55,
+        56.77647721470922,
+        10.166163715921977
+      ],
+      [
+        54.55,
+        56.82639062040689,
+        10.342163066990548
+      ],
+      [
+        54.55,
+        56.87020022369208,
+        10.519780178511068
+      ],
+      [
+        54.55,
+        56.9078538287216,
+        10.698803433070855
+      ],
+      [
+        54.55,
+        56.93930657406063,
+        10.879019537943691
+      ],
+      [
+        54.55,
+        56.964520986131674,
+        11.060213779212031
+      ],
+      [
+        54.55,
+        56.983467023861564,
+        11.242170277582483
+      ],
+      [
+        54.55,
+        56.9961221144731,
+        11.424672245589711
+      ],
+      [
+        54.55,
+        57.002471180378826,
+        11.607502245882397
+      ],
+      [
+        54.55,
+        57.06180328934833,
+        15.006636492217437
+      ],
+      [
+        54.55,
+        57.07609012480395,
+        15.417053695589845
+      ],
+      [
+        54.55,
+        57.104601386800105,
+        15.826728569643345
+      ],
+      [
+        54.55,
+        57.14730277565455,
+        16.235168266393384
+      ],
+      [
+        54.55,
+        57.20414292064682,
+        16.641881423801188
+      ],
+      [
+        54.55,
+        57.27505344181837,
+        17.04637875689319
+      ],
+      [
+        54.55,
+        57.359949032235214,
+        17.448173646381772
+      ],
+      [
+        54.55,
+        57.45872756061402,
+        17.846782724079056
+      ],
+      [
+        54.55,
+        57.57127019418833,
+        18.24172645439962
+      ],
+      [
+        54.55,
+        57.69744154166705,
+        18.632529711252438
+      ],
+      [
+        54.55,
+        57.837089816113135,
+        19.018722349628156
+      ],
+      [
+        54.55,
+        57.99004701754669,
+        19.399839771193975
+      ],
+      [
+        54.55,
+        58.15612913505265,
+        19.775423483215807
+      ],
+      [
+        54.55,
+        58.335136368150046,
+        20.145021650135206
+      ],
+      [
+        54.55,
+        58.526853367156384,
+        20.508189637137594
+      ],
+      [
+        54.55,
+        58.73104949225812,
+        20.864490545057855
+      ],
+      [
+        54.55,
+        58.94747909097549,
+        21.21349573597971
+      ],
+      [
+        54.55,
+        59.17588179368791,
+        21.5547853488967
+      ],
+      [
+        54.55,
+        59.41598282686438,
+        21.887948804814297
+      ],
+      [
+        54.55,
+        59.66749334362221,
+        22.21258530068556
+      ],
+      [
+        54.55,
+        59.93011077121621,
+        22.528304291586124
+      ],
+      [
+        54.55,
+        60.203519175040455,
+        22.834725960548433
+      ],
+      [
+        54.55,
+        60.487389638704606,
+        23.131481675489972
+      ],
+      [
+        54.55,
+        60.78138065972766,
+        23.418214432685915
+      ],
+      [
+        54.55,
+        61.08513856037305,
+        23.69457928625248
+      ],
+      [
+        54.55,
+        61.398297913130804,
+        23.96024376312455
+      ],
+      [
+        54.55,
+        61.72048198033497,
+        24.214888263028136
+      ],
+      [
+        54.55,
+        62.0513031673874,
+        24.458206442966627
+      ],
+      [
+        54.55,
+        62.39036348904271,
+        24.689905585758225
+      ],
+      [
+        54.55,
+        62.73725504819333,
+        24.909706952181224
+      ],
+      [
+        54.55,
+        63.091560526578824,
+        25.117346116303487
+      ],
+      [
+        54.55,
+        63.45285368682903,
+        25.31257328359274
+      ],
+      [
+        54.55,
+        63.8206998852371,
+        25.495153591424923
+      ],
+      [
+        54.55,
+        64.19465659464554,
+        25.664867391629187
+      ],
+      [
+        54.55,
+        64.57427393681624,
+        25.82151051472949
+      ],
+      [
+        54.55,
+        64.95909522364398,
+        25.964894515565035
+      ],
+      [
+        54.55,
+        65.34865750656238,
+        26.094846899994003
+      ],
+      [
+        54.55,
+        65.7424921334813,
+        26.211211332407814
+      ],
+      [
+        54.55,
+        66.14012531258582,
+        26.31384782380636
+      ],
+      [
+        54.55,
+        66.54107868231819,
+        26.402632900207877
+      ],
+      [
+        54.55,
+        66.94486988685753,
+        26.4774597511909
+      ],
+      [
+        54.55,
+        67.35101315640456,
+        26.538238358389567
+      ],
+      [
+        54.55,
+        67.7590198915735,
+        26.584895603787714
+      ],
+      [
+        54.55,
+        68.16839925118799,
+        26.61737535768149
+      ],
+      [
+        54.55,
+        68.57865874277391,
+        26.63563854620461
+      ],
+      [
+        54.55,
+        68.9893048150388,
+        26.639663198335114
+      ],
+      [
+        54.55,
+        69.3998434516251,
+        26.629444472326988
+      ],
+      [
+        54.55,
+        69.8097807654227,
+        26.604994661534874
+      ],
+      [
+        54.55,
+        70.21862359272622,
+        26.566343179624916
+      ],
+      [
+        54.55,
+        70.62588008652183,
+        26.51353652518945
+      ],
+      [
+        54.55,
+        71.03106030819023,
+        26.446638225808172
+      ],
+      [
+        54.55,
+        71.43367681691366,
+        26.365728761623032
+      ],
+      [
+        54.55,
+        71.83324525607802,
+        26.270905468518855
+      ],
+      [
+        54.55,
+        72.22928493596471,
+        26.162282421026088
+      ],
+      [
+        54.55,
+        72.621319412031,
+        26.039990295086618
+      ],
+      [
+        54.55,
+        73.00887705808343,
+        25.904176210847687
+      ],
+      [
+        54.55,
+        73.39149163365464,
+        25.75500355567311
+      ],
+      [
+        54.55,
+        73.76870284490094,
+        25.59265178758462
+      ],
+      [
+        54.55,
+        74.14005689834615,
+        25.417316219369894
+      ],
+      [
+        54.55,
+        74.29692529720809,
+        25.343064430569044
+      ],
+      [
+        54.55,
+        74.45614071798686,
+        25.273988584661257
+      ],
+      [
+        54.55,
+        74.61753243333094,
+        25.210162751960624
+      ],
+      [
+        54.55,
+        74.78092738223921,
+        25.151655373170442
+      ],
+      [
+        54.55,
+        74.94615035563496,
+        25.098529185993975
+      ],
+      [
+        54.55,
+        75.11302418424323,
+        25.050841157860567
+      ],
+      [
+        54.55,
+        75.28136992857027,
+        25.008642424839202
+      ],
+      [
+        54.55,
+        75.45100707078105,
+        24.971978236805114
+      ],
+      [
+        54.55,
+        75.62175370826922,
+        24.940887908918157
+      ],
+      [
+        54.55,
+        75.79342674871212,
+        24.91540477946498
+      ],
+      [
+        54.55,
+        75.96584210640135,
+        24.895556174110258
+      ],
+      [
+        54.55,
+        76.13881489963872,
+        24.881363376595267
+      ],
+      [
+        54.55,
+        76.31215964898554,
+        24.87284160591525
+      ],
+      [
+        54.55,
+        76.48569047615311,
+        24.87
+      ],
+      [
+        54.55,
+        83.7143095238469,
+        24.87
+      ],
+      [
+        54.55,
+        83.88784035101446,
+        24.87284160591525
+      ],
+      [
+        54.55,
+        84.06118510036129,
+        24.881363376595267
+      ],
+      [
+        54.55,
+        84.23415789359865,
+        24.895556174110258
+      ],
+      [
+        54.55,
+        84.40657325128788,
+        24.91540477946498
+      ],
+      [
+        54.55,
+        84.57824629173078,
+        24.940887908918157
+      ],
+      [
+        54.55,
+        84.74899292921896,
+        24.971978236805114
+      ],
+      [
+        54.55,
+        84.91863007142973,
+        25.008642424839202
+      ],
+      [
+        54.55,
+        85.08697581575677,
+        25.050841157860567
+      ],
+      [
+        54.55,
+        85.25384964436505,
+        25.098529185993975
+      ],
+      [
+        54.55,
+        85.41907261776079,
+        25.151655373170442
+      ],
+      [
+        54.55,
+        85.58246756666907,
+        25.210162751960624
+      ],
+      [
+        54.55,
+        85.74385928201315,
+        25.273988584661257
+      ],
+      [
+        54.55,
+        85.90307470279191,
+        25.343064430569044
+      ],
+      [
+        54.55,
+        86.05994310165386,
+        25.417316219369894
+      ],
+      [
+        54.55,
+        86.43129715509906,
+        25.59265178758462
+      ],
+      [
+        54.55,
+        86.80850836634536,
+        25.75500355567311
+      ],
+      [
+        54.55,
+        87.19112294191657,
+        25.904176210847687
+      ],
+      [
+        54.55,
+        87.578680587969,
+        26.039990295086618
+      ],
+      [
+        54.55,
+        87.9707150640353,
+        26.16228242102609
+      ],
+      [
+        54.55,
+        88.36675474392199,
+        26.270905468518855
+      ],
+      [
+        54.55,
+        88.76632318308634,
+        26.365728761623032
+      ],
+      [
+        54.55,
+        89.16893969180977,
+        26.446638225808172
+      ],
+      [
+        54.55,
+        89.57411991347817,
+        26.51353652518945
+      ],
+      [
+        54.55,
+        89.98137640727379,
+        26.566343179624916
+      ],
+      [
+        54.55,
+        90.3902192345773,
+        26.604994661534874
+      ],
+      [
+        54.55,
+        90.8001565483749,
+        26.629444472326988
+      ],
+      [
+        54.55,
+        91.2106951849612,
+        26.639663198335114
+      ],
+      [
+        54.55,
+        91.6213412572261,
+        26.63563854620461
+      ],
+      [
+        54.55,
+        92.03160074881201,
+        26.61737535768149
+      ],
+      [
+        54.55,
+        92.4409801084265,
+        26.584895603787714
+      ],
+      [
+        54.55,
+        92.84898684359544,
+        26.538238358389567
+      ],
+      [
+        54.55,
+        93.25513011314247,
+        26.4774597511909
+      ],
+      [
+        54.55,
+        93.65892131768182,
+        26.402632900207877
+      ],
+      [
+        54.55,
+        94.05987468741418,
+        26.31384782380636
+      ],
+      [
+        54.55,
+        94.4575078665187,
+        26.211211332407814
+      ],
+      [
+        54.55,
+        94.85134249343763,
+        26.094846899994003
+      ],
+      [
+        54.55,
+        95.24090477635602,
+        25.964894515565035
+      ],
+      [
+        54.55,
+        95.62572606318376,
+        25.82151051472949
+      ],
+      [
+        54.55,
+        96.00534340535447,
+        25.664867391629187
+      ],
+      [
+        54.55,
+        96.37930011476291,
+        25.495153591424923
+      ],
+      [
+        54.55,
+        96.74714631317097,
+        25.312573283592737
+      ],
+      [
+        54.55,
+        97.10843947342119,
+        25.117346116303487
+      ],
+      [
+        54.55,
+        97.46274495180667,
+        24.90970695218122
+      ],
+      [
+        54.55,
+        97.80963651095729,
+        24.689905585758225
+      ],
+      [
+        54.55,
+        98.1486968326126,
+        24.458206442966627
+      ],
+      [
+        54.55,
+        98.47951801966504,
+        24.214888263028136
+      ],
+      [
+        54.55,
+        98.8017020868692,
+        23.96024376312455
+      ],
+      [
+        54.55,
+        99.11486143962695,
+        23.694579286252477
+      ],
+      [
+        54.55,
+        99.41861934027234,
+        23.418214432685915
+      ],
+      [
+        54.55,
+        99.7126103612954,
+        23.131481675489972
+      ],
+      [
+        54.55,
+        99.99648082495955,
+        22.834725960548425
+      ],
+      [
+        54.55,
+        100.26988922878378,
+        22.528304291586124
+      ],
+      [
+        54.55,
+        100.53250665637779,
+        22.212585300685557
+      ],
+      [
+        54.55,
+        100.78401717313562,
+        21.887948804814293
+      ],
+      [
+        54.55,
+        101.0241182063121,
+        21.5547853488967
+      ],
+      [
+        54.55,
+        101.25252090902451,
+        21.213495735979706
+      ],
+      [
+        54.55,
+        101.46895050774188,
+        20.86449054505785
+      ],
+      [
+        54.55,
+        101.67314663284363,
+        20.50818963713759
+      ],
+      [
+        54.55,
+        101.86486363184996,
+        20.145021650135202
+      ],
+      [
+        54.55,
+        102.04387086494735,
+        19.775423483215803
+      ],
+      [
+        54.55,
+        102.20995298245332,
+        19.399839771193975
+      ],
+      [
+        54.55,
+        102.36291018388687,
+        19.01872234962815
+      ],
+      [
+        54.55,
+        102.50255845833296,
+        18.632529711252435
+      ],
+      [
+        54.55,
+        102.62872980581167,
+        18.24172645439962
+      ],
+      [
+        54.55,
+        102.74127243938598,
+        17.846782724079056
+      ],
+      [
+        54.55,
+        102.8400509677648,
+        17.44817364638177
+      ],
+      [
+        54.55,
+        102.92494655818163,
+        17.046378756893187
+      ],
+      [
+        54.55,
+        102.99585707935319,
+        16.641881423801184
+      ],
+      [
+        54.55,
+        103.05269722434545,
+        16.235168266393384
+      ],
+      [
+        54.55,
+        103.0953986131999,
+        15.826728569643342
+      ],
+      [
+        54.55,
+        103.12390987519606,
+        15.417053695589845
+      ],
+      [
+        54.55,
+        103.13819671065167,
+        15.006636492217433
+      ],
+      [
+        54.55,
+        103.1434181183437,
+        14.707502245882397
+      ],
+      [
+        54.55,
+        103.14976718424944,
+        14.524672245589713
+      ],
+      [
+        54.55,
+        103.16242227486097,
+        14.342170277582483
+      ],
+      [
+        54.55,
+        103.18136831259086,
+        14.160213779212032
+      ],
+      [
+        54.55,
+        103.20658272466191,
+        13.979019537943692
+      ],
+      [
+        54.55,
+        103.23803547000094,
+        13.798803433070857
+      ],
+      [
+        54.55,
+        103.27568907503046,
+        13.61978017851107
+      ],
+      [
+        54.55,
+        103.31949867831565,
+        13.442163066990549
+      ],
+      [
+        54.55,
+        103.36941208401332,
+        13.266163715921978
+      ],
+      [
+        54.55,
+        103.42536982405939,
+        13.091991815278291
+      ],
+      [
+        54.55,
+        103.48730522902056,
+        12.919854877762855
+      ],
+      [
+        54.55,
+        103.55514450752597,
+        12.749957991573714
+      ],
+      [
+        54.55,
+        103.62880683418396,
+        12.582503576056451
+      ],
+      [
+        54.55,
+        103.7082044458796,
+        12.417691140536778
+      ],
+      [
+        54.55,
+        103.7932427463377,
+        12.255717046620193
+      ],
+      [
+        54.55,
+        103.88382041882714,
+        12.096774274241922
+      ],
+      [
+        54.55,
+        103.97982954687228,
+        11.941052191745854
+      ],
+      [
+        54.55,
+        104.08115574282711,
+        11.788736330266426
+      ],
+      [
+        54.55,
+        104.18767828415967,
+        11.640008162682237
+      ],
+      [
+        54.55,
+        104.2992702572838,
+        11.495044887404791
+      ],
+      [
+        54.55,
+        104.41579870876707,
+        11.354019217259928
+      ],
+      [
+        54.55,
+        104.5371248037349,
+        11.2170991737135
+      ],
+      [
+        54.55,
+        104.66310399128174,
+        11.08444788668644
+      ],
+      [
+        54.55,
+        104.79358617669267,
+        10.956223400197763
+      ],
+      [
+        54.55,
+        104.92841590026991,
+        10.832578484067
+      ],
+      [
+        54.55,
+        105.06743252255136,
+        10.713660451900475
+      ],
+      [
+        54.55,
+        105.21047041570037,
+        10.599610985578236
+      ],
+      [
+        54.55,
+        105.35735916083895,
+        10.490565966450754
+      ],
+      [
+        54.55,
+        105.50792375108891,
+        10.38665531344654
+      ],
+      [
+        54.55,
+        105.66198480007942,
+        10.288002828283517
+      ],
+      [
+        54.55,
+        105.8193587556724,
+        10.1947260479686
+      ],
+      [
+        54.55,
+        105.97985811865101,
+        10.106936104761202
+      ],
+      [
+        54.55,
+        106.14329166611088,
+        10.024737593767512
+      ],
+      [
+        54.55,
+        106.3094646792878,
+        9.948228448323311
+      ],
+      [
+        54.55,
+        106.47817917555045,
+        9.877499823313773
+      ],
+      [
+        54.55,
+        106.64923414428179,
+        9.812635986569285
+      ],
+      [
+        54.55,
+        106.82242578636813,
+        9.753714218466666
+      ],
+      [
+        54.55,
+        106.99754775701032,
+        9.70080471985543
+      ],
+      [
+        54.55,
+        107.17439141156815,
+        9.65397052841875
+      ],
+      [
+        54.55,
+        107.35274605414467,
+        9.61326744356881
+      ],
+      [
+        54.55,
+        107.53239918861448,
+        9.578743959966014
+      ],
+      [
+        54.55,
+        107.71313677179687,
+        9.55044120974123
+      ],
+      [
+        54.55,
+        107.89474346847217,
+        9.52839291348998
+      ],
+      [
+        54.55,
+        108.07700290793743,
+        9.512625340096871
+      ],
+      [
+        54.55,
+        108.25969794179582,
+        9.503157275438198
+      ],
+      [
+        54.55,
+        108.44261090267258,
+        9.5
+      ],
+      [
+        54.55,
+        109.2,
+        9.5
+      ]
+    ]
+  },
+  "tiers": {
+    "locked": "板边、紧固孔、光学与外部人机接口：0 mm",
+    "connector_proposal": "J4 主/ J2 驱信号、灯板焊盘只可提案 u±0.3 mm，复核后生效",
+    "power": "最大包络限定在各自分区，TOP≤5.5 mm"
+  }
+}

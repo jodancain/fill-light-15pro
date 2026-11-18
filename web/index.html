@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f4ee"><title>机顶补光灯 · 结构查看台</title>
+<link rel="icon" href="data:,"><link rel="stylesheet" href="./style.css">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+<header class="mast">
+  <div class="identity"><svg class="mark" viewBox="0 0 36 36" aria-hidden="true"><path d="M4 4h28v28H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 12h16v6H10zM14 22h8v3h-8z" fill="currentColor"/><path d="M1 9V1h8m18 34h8v-8" fill="none" stroke="currentColor"/></svg><span>结构查看台</span><i></i><span class="project-id">FL — 15 PRO</span></div>
+  <a href="https://github.com/jodancain/fill-light-15pro" target="_blank" rel="noopener noreferrer" class="repo">项目仓库 <span aria-hidden="true">↗</span></a>
+</header>
+<main>
+  <section class="intro">
+    <div><div class="eyebrow"><i></i> 结构研究 <b>/</b> 样机 01</div><h1>机顶补光灯<span> / </span><small>iPhone 15 Pro</small></h1><p>短边上方朝后补光，背部双电芯供电，线束穿过可拆颈部。</p></div>
+    <div class="revision"><span>v0.3</span> 结构草稿 <i></i> 未经打印实配</div>
+  </section>
+  <div class="workbench">
+    <section class="viewport" aria-label="三维装配视图">
+      <div class="viewbar"><div><span class="live-dot"></span><strong>装配视图</strong></div><span class="mono" id="vis-count">— / —</span></div>
+      <div id="stage">
+        <canvas id="canvas" tabindex="0" aria-label="三维模型：拖动旋转，滚轮或双指缩放，右键或双指平移"></canvas>
+        <svg id="annotations" aria-hidden="true"></svg>
+        <div class="stage-legend"><span id="view-title">等轴测</span><span id="projection">正交投影</span></div>
+        <div class="registration reg-a"></div><div class="registration reg-b"></div>
+        <div id="status" role="status">正在载入结构模型…</div>
+        <div class="plate"><span>图版 01</span><i></i><span id="weight">装配研究</span></div>
+        <div id="picked" hidden></div>
+      </div>
+      <nav id="views" aria-label="预设视角"><span class="tool-label">视角</span>
+        <button data-view="iso" aria-pressed="true">等轴测</button><button data-view="back">背面</button><button data-view="front">正面</button><button data-view="side">侧面</button><button data-view="top">顶面</button>
+      </nav>
+    </section>
+    <aside class="panel" id="panel">
+      <button class="panel-head" id="panel-toggle" aria-controls="panel-body" aria-expanded="true"><span><span class="sect-no">01—02</span> 检视面板</span><span class="fold">收起 −</span></button>
+      <div id="panel-body">
+        <section class="tools"><div class="section-title"><span class="sect-no">01</span><h2>分解与测量</h2><button id="reset">复位</button></div>
+          <label class="range-label" for="explode">爆炸视图 <output id="explode-val" for="explode">0%</output></label>
+          <input id="explode" type="range" min="0" max="100" step="1" value="0">
+          <div class="switches"><label><input id="dims" type="checkbox"> 关键尺寸</label><label><input id="clip" type="checkbox"> 剖切</label>
+          <select aria-label="剖切轴" id="axis" disabled><option value="x">沿 X</option><option value="y">沿 Y</option></select></div>
+          <div id="slice" hidden><label class="range-label" for="cut-pos">剖切位置 <output id="cut-val">— mm</output></label><input id="cut-pos" type="range" step=".1"></div>
+        </section>
+        <section class="inventory"><div class="section-title"><span class="sect-no">02</span><h2>零件目录</h2><span id="part-count" class="count">—</span></div>
+          <div id="groups"></div>
+        </section>
+        <section id="detail" aria-live="polite"><div class="eyebrow">零件信息</div><strong>选择一个零件</strong><p>点选模型或目录名称查看参数；勾选框控制显隐。</p></section>
+      </div>
+    </aside>
+  </div>
+  <footer><span>手机与镜头平台均为简化示意，非苹果图纸数据。几何检查不代替实配。</span><span>拖动旋转 · 双指缩放 / 平移</span></footer>
+</main>
+<script type="module" src="./app.js"></script>
+</body></html>
