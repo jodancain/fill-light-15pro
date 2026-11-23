@@ -87,3 +87,20 @@
 DXF：BOARD_OUTLINE：成品板边；HOLES：钻孔 / 紧固禁区；CONNECTORS：接口 / 针一；FIXED_PARTS：固定器件中心；LED_ARRAY：3030 阵列；KEEPOUT_TOP：正面禁布；KEEPOUT_BOTTOM：背面禁布；HEIGHT_LIMIT：分区限高；DIMENSIONS：尺寸；NOTES：说明；PHONE_REF：公开手机外形；ENCLOSURE：背壳 / 风机；HARNESS：线束走向
 
 整机 DXF 的 ENCLOSURE 层已更新镜头窗、外顶轨、背盖钉头投影，不是 PCB 钻孔。板框、孔位、接口仍为 R5 坐标。头方已接受冻结导电件；分区包络实测见 ../out/report.md。
+
+## A2-r1｜可换电池版
+
+默认的无后缀图纸、STEP 和接口 JSON 仍为 C-r7，禁止将 A2 回写到 C。A2 只用下列独立文件：
+
+|文件|用途|
+|---|---|
+|`pcb_interface_battery.json`|三块板、盖面三键五灯、2S 包、RT_BAT、六针线序、线束和电池/PD 策略|
+|`main_battery.dxf` / `.png`|电池主板；60 × 23.5 × 1 mm、四层、R1.5、无安装孔；整机原点 (5.3,125.8,14)，X=5.3+u，Y=125.8−v|
+|`assembly_layout_battery.dxf` / `.png`|三板、两层电芯、风机、插头与线束投影；深度见 STEP|
+|`enclosure_assembly_battery.step`|电池版完整装配，供核壳体、配对插头、禁高和拆装|
+
+**驱动板和灯板完全共用 C**：发 `driver.dxf` 与 `led.dxf`，不得另开板号或移动紧固孔；LED 到窗、热界面和铝鳍均不变。底壳、软衬也通用。A2 的主板重排，双 USB-C 边和两口中心不动。三键五灯 XY 不变，装在电池盖薄膜软排上；J6 接回主板。J3 为主驱功率短引线；保持驱动侧配对件及网络。主板走线需保留 BQ25798、HY2120、独立二级过压、保险丝、PD、5 V 输出与电芯 NTC，不能拿毛面积当作布通。
+
+**J5：六位带锁、防呆，所有触点逐针额定 ≥5 A**。1、2 BAT+，3 MID（检测），4 NTC（热敏另一端 BAT−），5、6 BAT−；脚位已定，封装未定。板 TOP 是 Z15，从板面量**插合总高 ≤14.5 mm**（含锁扣及线出口）。开盖后解锁、沿 +Z 拔出，留 15 mm 行程和 20×20×15 mm 壳外指腹空间。不得按 DXF 的 1 脚示意生成焊盘，也不得采用自带 PCM 的普通两线整包。
+
+电池模式总上限 4.8 A；灯 >10 W 时手机上限 1.5 A，灯 ≤10 W 时上限 3 A，必要时继续降手机。任一节 <3.4 V 关手机、≤3.0 V 关灯。待需求方确认；外部 PD 沿用 C 合约，不足时停充。数模与采购/热测试边界见 `../out/report_battery.md`。

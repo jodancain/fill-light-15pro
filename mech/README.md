@@ -34,3 +34,10 @@ A 版完整快照保存在 `out/archive_v04A/`，v0.3 在 `out/archive_v03/`。�
 头方已复核第 6 轮几何，本轮不改任何零件。顶部与底部按分区包络判定，线圈占用及两个插头另列为已接受偏差。驱动板 J4 针序见 [PCB 交接说明](pcb/README.md)。数模检查全部通过；另须打印实配。
 
 第 6 轮原件及哈希在 `out/archive_v04C_r6/`。重建后用项目 venv 执行 `python -B mech/geometry07.py`，可逐件比较 STEP、STL 和 GLB 的体积、六个包围盒坐标及几何数据指纹；[回读明细](out/round07/geometry.json)使用 mm、mm³。STEP 读回实形并比对所有非显示样式的 DATA 实体，不把导出时刻和着色条目的枚举顺序当作几何变化；同时单列完整 DATA 是否逐字节相同。
+
+## 第八轮｜C 冻结、A2 分开构建
+
+- `./mech/build.sh C` 重建缺失的 C 打印发布件并逐件核对，不重新序列化已发布的 STEP/DXF；发现已有文件摘要不同即停止。归档是 C 的制造输出，不是另一个可编辑的 C 模型。
+- `./mech/build.sh A2` 从共用夹持与光机定义生成电池版；`./mech/build.sh all` 再独立回读 C 的每个 STEP/STL/GLB 节点。只生成 A2 的独立制造、ECAD 和 viewer 数据，不覆盖 C 的资源。
+- A2 源在 `a2_layout.py`（电气合同）、`a2_model.py`（尾舱）、`a2_build.py`（导出和量规）、`a2_pcb.py` 与 `a2_report.py`。打印 STEP/STL 在 `out/battery/`；选型、续航及验收见 `out/report_battery.md`，ECAD 见 `pcb/README.md`。
+- `./mech/web.sh check` 验两个离线入口，`./mech/web.sh serve 8000` 供本机浏览；默认 C。A2 背盖按面盖朝上、托底支撑打样。电池供应商配组，打印件不直接夹紧铝塑膜。未实配前不承诺持续功率或电池实测续航。

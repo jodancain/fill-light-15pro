@@ -6,7 +6,8 @@ const url=p=>new URL('../web/'+p,import.meta.url);
 registerHooks({resolve(s,c,next){return s==='three'?{url:url('vendor/three.module.js').href,shortCircuit:true}:next(s,c);}});
 const {GLTFLoader}=await import(url('vendor/GLTFLoader.js'));
 const {Box3}=await import('three');
-const [data,meta]=await Promise.all([readFile(url('models/filllight.glb')),readFile(url('models/parts.json'),'utf8').then(JSON.parse)]);
+const suffix=process.argv.includes('--battery')?'_battery':'';
+const [data,meta]=await Promise.all([readFile(url('models/filllight'+suffix+'.glb')),readFile(url('models/parts'+suffix+'.json'),'utf8').then(JSON.parse)]);
 const {scene}=await new GLTFLoader().parseAsync(data.buffer.slice(data.byteOffset,data.byteOffset+data.byteLength),'');
 let triangles=0;
 for(const p of meta.parts){
@@ -39,4 +40,19 @@ if(meta.revision==='C-r7'){
   assert(j4.note.includes('针序以电气原理图为准；第 4 针预留 PWM'));
   assert(meta.releaseAllowed && meta.checks.every(c=>c.ok));
   console.log('R7 网页零件中的风扇 J4 针序、预留针注释与放行状态通过。');
+}
+
+if(suffix){
+  assert.equal(meta.revision,'A2-r1');assert.equal(meta.variant,'A2');
+  assert(meta.releaseAllowed && meta.checks.every(c=>c.ok));
+  const A=await readFile(url('battery.html'),'utf8'),C=await readFile(url('index.html'),'utf8');
+  const app=await readFile(url('app_battery.js'),'utf8');
+  assert(A.includes('app_battery.js?v=A2-r1')&&C.includes('app.js?v=C-r7'));
+  assert(A.includes('./index.html?v=C-r7')&&C.includes('./battery.html?v=A2-r1'));
+  assert(app.includes('parts_battery.json?v=A2-r1')&&app.includes('filllight_battery.glb?v=A2-r1'));
+  const groups=app.match(/const groups = \[(.*?)\];/)[1].split(',').map(s=>s.trim().slice(1,-1));
+  assert.deepEqual(new Set(groups),new Set(meta.parts.map(p=>p.group)));
+  const lookup=new Map(meta.parts.map(p=>[p.id,p]));
+  for(const k of ['cell_1','cell_2','cell_ntc','main_j5','battery_plug','pack_leads','panel_tail','battery_lid'])assert(lookup.has(k));
+  console.log('A2 标记、默认 C 导航、版本化 URL、共用板、换电节点和零件组均已读回。');
 }

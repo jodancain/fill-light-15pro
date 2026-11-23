@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f4ee"><title>电池版 A2 · 全贴合背夹补光灯 · 结构查看台</title>
+<link rel="icon" href="data:,"><link rel="stylesheet" href="./style.css?v=A2-r1">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+<header class="mast">
+  <div class="identity"><svg class="mark" viewBox="0 0 36 36" aria-hidden="true"><path d="M4 4h28v28H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 12h16v6H10zM14 22h8v3h-8z" fill="currentColor"/><path d="M1 9V1h8m18 34h8v-8" fill="none" stroke="currentColor"/></svg><span>结构查看台</span><i></i><span class="project-id">FL — 15 PRO</span></div>
+  <a href="https://github.com/jodancain/fill-light-15pro" target="_blank" rel="noopener noreferrer" class="repo">项目仓库 <span aria-hidden="true">↗</span></a>
+</header>
+<main>
+  <!-- 变体导航 --><nav class="options" aria-label="电源版本" style="margin:0;padding:.6rem 1rem"><a href="./index.html?v=C-r7">外接电源版 C</a>　/　<a href="./battery.html?v=A2-r1" aria-current="page">电池版 A2</a></nav><!-- /变体导航 -->
+  <section class="intro">
+    <div><div class="eyebrow"><i></i> 结构研究 <b>/</b> 电池版 A2</div><h1>全贴合背夹补光灯<span> / </span><small>iPhone 15 Pro</small></h1><p>保留 C 的双色灯窗和主动风道，尾盖内装可更换的双节软包。</p></div>
+    <div class="revision"><span>A2 · R1</span> 数模已通过 <i></i> 未经打印实配</div>
+  </section>
+  <div class="workbench">
+    <section class="viewport" aria-label="三维装配视图">
+      <div class="viewbar"><div><span class="live-dot"></span><strong>装配视图</strong></div><span class="mono" id="vis-count">— / —</span></div>
+      <div id="stage">
+        <canvas id="canvas" tabindex="0" aria-label="三维模型：拖动旋转，滚轮或双指缩放，右键或双指平移"></canvas>
+        <svg id="annotations" aria-hidden="true"></svg>
+        <div class="stage-legend"><span id="view-title">等轴测</span><span id="projection">正交投影</span></div>
+        <div class="registration reg-a"></div><div class="registration reg-b"></div>
+        <div id="status" role="status">正在载入结构模型…</div>
+        <div class="plate"><span>图版 01</span><i></i><span id="weight">装配研究</span></div>
+        <div id="picked" hidden></div>
+      </div>
+      <nav id="views" aria-label="预设视角"><span class="tool-label">视角</span>
+        <button data-view="iso" aria-pressed="true">等轴测</button><button data-view="back">背面</button><button data-view="front">正面</button><button data-view="side">侧面</button><button data-view="top">顶面</button>
+      </nav>
+    </section>
+    <aside class="panel" id="panel">
+      <button class="panel-head" id="panel-toggle" aria-controls="panel-body" aria-expanded="true"><span><span class="sect-no">01—02</span> 检视面板</span><span class="fold">收起 −</span></button>
+      <div id="panel-body">
+        <section class="tools"><div class="section-title"><span class="sect-no">01</span><h2>分解与测量</h2><button id="reset">复位</button></div>
+          <label class="range-label" for="explode">爆炸视图 <output id="explode-val" for="explode">0%</output></label>
+          <input id="explode" type="range" min="0" max="100" step="1" value="0">
+          <div class="switches"><label><input id="dims" type="checkbox"> 关键尺寸</label><label><input id="clip" type="checkbox"> 剖切</label>
+          <select aria-label="剖切轴" id="axis" disabled><option value="x">沿 X</option><option value="y">沿 Y</option></select></div>
+          <div id="slice" hidden><label class="range-label" for="cut-pos">剖切位置 <output id="cut-val">— mm</output></label><input id="cut-pos" type="range" step=".1"></div>
+        </section>
+        <section class="inventory"><div class="section-title"><span class="sect-no">02</span><h2>零件目录</h2><span id="part-count" class="count">—</span></div>
+          <div id="groups"></div>
+        </section>
+        <section id="detail" aria-live="polite"><div class="eyebrow">零件信息</div><strong>选择一个零件</strong><p>点选模型或目录名称查看参数；勾选框控制显隐。</p></section>
+      </div>
+    </aside>
+  </div>
+  <section class="options"><div class="eyebrow">电池版 / A2-r1</div><h2>换电，不拆手机壳架</h2><div class="options-grid">
+<article><b>尺寸与重量</b><p>含扣 76.70 × 152.70 × 42.25 mm；附件约 152.90 g。盖面最高 31.95 mm；灯板、驱动板、光窗及风道与 C 共用。</p></article>
+<article><b>无线使用时间 · 估算</b><p>2S 300 mAh，2.22 Wh。20 W 灯约 4.8 分钟、10 W 约 9.0 分钟、20 W 加手机 1.5 A 约 3.6 分钟。保护、温升和压降会缩短时间。</p></article>
+<article><b>为什么不用 5 Ah</b><p>两枚 55×55 mm 电芯会占灯窗和风道。长拍选 C 配外部电源；本版适合短时无线，不等同于 37 Wh 的续航。</p></article></div></section>
+<section class="options"><h2>已知偏差与使用限制</h2><p>装夹后不能无线充电或使用 MagSafe。请关闭手机闪光灯；双线插入会进入天线带。风机及电感对指南针、防抖和对焦的影响须实测。</p><p>关机并断开 PD 后整包更换。电池放电上限 4.8 A；单节低于 3.4 V 关手机口，至 3.0 V 关灯。充电不超过 45 °C、放电不超过 60 °C。20 W 是散热目标，未经热台架与实机验证。</p></section>
+  <footer><span>手机外形为公开简化外形；镜头开窗按本地图纸推导的包络开，不含原始尺寸。</span><span>拖动旋转 · 双指缩放 / 平移</span></footer>
+</main>
+<script type="module" src="./app_battery.js?v=A2-r1"></script>
+</body></html>
