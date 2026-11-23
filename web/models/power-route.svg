@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 535 175" role="img" aria-labelledby="title">
+<title id="title">腰袋外接电源、背夹输入和手机输出接线示意</title>
+<rect width="535" height="175" rx="12" fill="#f2f2e8"/>
+<g stroke="#476254" stroke-width="2" fill="#faf9f2"><rect x="16" y="45" width="103" height="82" rx="12"/><rect x="212" y="12" width="88" height="148" rx="13"/><rect x="215" y="79" width="82" height="66" rx="8" fill="#53685c"/><rect x="222" y="85" width="68" height="37" rx="4" fill="#f1cf95"/></g>
+<g fill="none" stroke-width="3" stroke-linecap="round"><path stroke="#985b35" d="M119 91h30q12 0 12 12v42q0 15 15 15h50q9 0 9-10v-6"/><path stroke="#477575" d="M276 144v13q0 12-12 12h-2q-7 0-7-8v-2"/></g>
+<g font-family="sans-serif" font-size="14" fill="#284439"><text x="30" y="79">腰袋 · PD</text><text x="30" y="104">20 V / 3 A</text><text x="316" y="39">不在手机上叠电池</text><text x="316" y="69">背面下半部：灯窗</text><text x="316" y="107" fill="#864c2c">J1 ← 腰袋长线</text><text x="316" y="135" fill="#315e5d">J2 → 短线回手机</text></g>
+</svg>

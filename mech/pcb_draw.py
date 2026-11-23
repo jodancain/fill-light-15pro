@@ -3,7 +3,9 @@ from pathlib import Path
 import os,json,math,shutil
 from collections import Counter
 from hashlib import sha256
-from model import ROOT,L,D,P,B,W,H,SPEC,parts,features,xy,absrect,bundle_path,remote_devices
+from model import ROOT,L,D,P,B,W,H,SPEC,parts,xy,absrect,PITCH
+from c04 import FAN,POWER,VARIANT,policy
+from v04_config import WINDOW_XY,RAIL_X,RAIL_Y,MOUNTS
 CACHE=ROOT/'mech/out/.cache'
 os.environ.setdefault('MPLCONFIGDIR',str(CACHE/'mpl'))
 os.environ.setdefault('XDG_CACHE_HOME',str(CACHE))
@@ -20,7 +22,7 @@ DIR=ROOT/'mech/pcb'
 LAY={'BOARD_OUTLINE':('#233729','成品板边'),'HOLES':('#965119','钻孔 / 紧固禁区'),'CONNECTORS':('#105794','接口 / 针一'),
      'FIXED_PARTS':('#67388e','固定器件中心'),'LED_ARRAY':('#a55811','3030 阵列'),'KEEPOUT_TOP':('#bf3342','正面禁布'),
      'KEEPOUT_BOTTOM':('#85643d','背面禁布'),'HEIGHT_LIMIT':('#168072','分区限高'),'DIMENSIONS':('#46677c','尺寸'),
-     'NOTES':('#3c4942','说明'),'PHONE_REF':('#86938b','公开手机外形'),'ENCLOSURE':('#64877a','壳体 / 电芯'),
+     'NOTES':('#3c4942','说明'),'PHONE_REF':('#86938b','公开手机外形'),'ENCLOSURE':('#64877a','背壳 / 风机'),
      'HARNESS':('#b54732','线束走向')}
 APP='FILL_LIGHT'; SZ=75
 def setup():
@@ -109,44 +111,19 @@ def board_dxf(b):
         sy-=3.5;text(m,'CONNECTORS',(sx,sy),f"{it['ref']}   {it['type']}   ({fmtp(it['center'])})   {direction(it['direction'])}",.97)
         sy-=1.7;text(m,'CONNECTORS',(sx,sy),nets(it),.68,it['ref']+'_nets')
     if name=='driver':
+        j4=next(c for c in b['connectors'] if c['ref']=='J4')
+        sy-=2.1;text(m,'NOTES',(sx,sy),'J4：'+j4['note'],.82,'J4_note')
         for line in [b['stack_note'],'每路最大裸体面积 298.66 mm²；高区 252.8 mm²，低件需外排。',f"双路试排 最大包络 {2+len(b['rough_placement'])}/26；7×7 电感、小 PMOS {2+len(b['compact_candidate']['other_parts'])}/26，详见 JSON。"]:
             sy-=2.1;text(m,'NOTES',(sx,sy),line,.82)
     for s in [f"{b['layers']} 层 / {b['material']} / 厚 {b['thickness']:g} / R{b['corner_radius']:g}",
               f"整机坐标：X={b['origin'][0]:g}+u；Y={b['origin'][1]:g}−v；BOT Z={b['origin'][2]:g}；TOP 朝 +Z",
               '圆形标记为 1 脚；箭头为插拔 / 出线；圆点套圈为朝 +Z。','钻孔与禁铜圈分开；请只将 BOARD_OUTLINE 导入板边。',
-              '型号、落脚图与配对插头由电气确认；不可按占位轮廓制焊盘。']:
+              'v0.4-C：外接 PD，机内无电芯；两口分别为输入和 5V 输出。','型号、落脚图与配对插头由电气确认；不可按占位轮廓制焊盘。']:
         sy-=2.35;text(m,'NOTES',(sx,sy),s,.82)
     for z in b['height_zones']:
         if 'clearance_top' in z:
             sy-=2.05;text(m,'HEIGHT_LIMIT',(sx,sy),f"{z['id']}  全区净空 {z['clearance_top']:.2f} mm；发板工作限高 {z['top']:.2f} mm",.78)
     save(d,DIR/(name+'.dxf'))
-def assembly_dxf():
-    d,m=setup();rounded(m,'PHONE_REF',W,H,P.corner_r,'phone','public',0,-H)
-    for id,k in [('neck',L['neck']),('pod',L['pod']),('head',L['head'])]:
-        x,X=k['x'];y,Y=k['y'];rect(m,'ENCLOSURE',[x,-Y,X,-y],'body',id)
-    for i,y in enumerate(L['pod']['cell_axis_y'],1):
-        cx=sum(L['pod']['x'])/2;rect(m,'ENCLOSURE',[cx-P.cell_l/2,-y-P.cell_d/2,cx+P.cell_l/2,-y+P.cell_d/2],'cell',str(i))
-    for b in B.values():
-        x,y,z=b['origin'];w,h=b['size'];rounded(m,'BOARD_OUTLINE',w,h,b['corner_radius'],'board',b['id'],x,-y)
-        for it in b['holes']:
-            xx,yy=xy(b,it['center']);circle(m,'HOLES',[xx,-yy],it['drill']/2,'drill',it['ref'])
-    for r in remote_devices(B,features,P,L):
-        x,y,_=r['xyz'];cw,ch,_=r['size']
-        rect(m,'FIXED_PARTS',[x-cw/2,-y-ch/2,x+cw/2,-y+ch/2],'remote',r['ref'])
-        text(m,'FIXED_PARTS',(x+cw/2+.5,-y),r['ref'],1.1)
-    from model import ridge_path,neck_x,RX
-    wp=bundle_path();cx=L['neck']['x'][0]+P.wall+P.slot_w/2
-    ys=sorted(set([y for y,z in wp]+[15+i*23/32 for i in range(33)]+[y for y,z,t in ridge_path(L,P)]));cs=[(neck_x(y),-y) for y in ys];m.add_lwpolyline(cs,dxfattribs=att('HARNESS'))
-    for shift in [-3.425,3.425]:m.add_lwpolyline([(x+shift,y) for x,y in cs],dxfattribs=att('HARNESS'))
-    def leader(yy,label,x0,dy=0):
-        ln(m,'NOTES',(x0,yy),(79,yy+dy));text(m,'NOTES',(81,yy+dy-.6),label,1.65)
-    for yy,label,x0,dy in [(52,'单层铝基灯板 · 72 × 3030',66,5),(42,'四层恒流驱动板 · 风扇后方',63,0),
-              (7,'可拆颈部 / 双绞功率线与信号束',61,0),(-68.9,'21700 · 电芯 1',70,0),(-91.3,'21700 · 电芯 2',70,0),
-              (-113,'四层主板 / 双 USB-C 朝手机底端',64,0),(-144,'手机公开外形参照',65,0)]:
-        leader(yy,label,x0,dy)
-    text(m,'NOTES',(0,75),'整机背视 / 三板定位',3.2)
-    text(m,'NOTES',(0,-154),'投影 (X, −Y)，单位 mm。示意，非苹果图纸数据。深度与分线点见三维文件。',1.25)
-    d.set_modelspace_vport(height=260,center=(60,-40));d.saveas(DIR/'assembly_layout.dxf')
 def geom(e):
     pts=np.array(list(e.get_points('xy')));return np.r_[pts.min(0),pts.max(0)]
 def sdf(pt,w,h,r):
@@ -190,14 +167,14 @@ def audit(b,d):
         centers=[((r[0]+r[2])/2,(r[1]+r[3])/2) for _,r in ls];actual={k:0 for k in ['W','C']};strings=Counter()
         for it in b['leds']:
             e=ee['led',it['ref']];xx,yy=geom(e)[:2]+1.5
-            i=round((xx-min(q[0] for q in centers))/L['led_board']['pitch'][0]);j=round((yy-min(q[1] for q in centers))/L['led_board']['pitch'][1])
+            i=round((xx-min(q[0] for q in centers))/PITCH[0]);j=round((yy-min(q[1] for q in centers))/PITCH[1])
             col='W' if (i+j)%2==0 else 'C';assert it['color']==col
             lab={a.dxf.text:a for a in m.query('TEXT[layer=="LED_ARRAY"]') if info(a)[1]==it['ref']}
             serial=f"{col}{j+1}.{i//2+1 if j%2==0 else 6-i//2}"
             assert set(lab)=={serial,'+','−'} and np.allclose([lab['+'].dxf.insert.x+.20,lab['+'].dxf.insert.y+.61],it['anode']) and np.allclose([lab['−'].dxf.insert.x+.20,lab['−'].dxf.insert.y+.61],it['cathode'])
             actual[col]+=1;strings[serial.split('.')[0]]+=1
         gap=min(rect_dist(r,c)-k for _,r in ls for c,k in holes);record('紧固圈至灯珠',gap>=.5,f'最近 {gap:.3f} mm，四孔 Ø4.0 小头禁圈待选型')
-        record('双色阵列',len(ls)==72 and min(edges)>=1 and not collisions and actual=={'W':36,'C':36} and len(strings)==12 and set(strings.values())=={6},f'72 颗；W/C 各 36，每色 6 串号 × 每串 6 颗；最小边距 {min(edges):.2f} mm，阵列未移点')
+        record('双色阵列',len(ls)==72 and min(edges)>=1 and not collisions and actual=={'W':36,'C':36} and len(strings)==12 and set(strings.values())=={6},f'72 颗；W/C 各 36，每色 6 串号 × 每串 6 颗；最小边距 {min(edges):.2f} mm，12×6，节距按贴合版')
     return ck
 def preview(d,b=None):
     from matplotlib.patches import Polygon
@@ -206,7 +183,7 @@ def preview(d,b=None):
     plt.rcParams['axes.unicode_minus']=False
     fig=plt.figure(figsize=(14.4,8.5),facecolor='white');label=b['name'] if b else '三板整机布局'
     fig.text(.045,.935,'结构输入图册  /  '+label,color='#203e39',fontsize=24,weight='normal')
-    fig.text(.046,.891,'PCB 机械接口    /    V0.3    /    毫米 · 不按屏幕比例量取尺寸',fontsize=11,color='#557368')
+    fig.text(.046,.891,'PCB 机械接口    /    V0.4 · C    /    毫米 · 不按屏幕比例量取尺寸',fontsize=11,color='#557368')
     ax=fig.add_axes([.045,.19,.59,.61] if b else [.045,.16,.69,.66]);ax.set_aspect('equal');ax.set_axis_off()
     w,h=b['size'] if b else (0,0)
     ax.set_xlim((-11,w+7) if b else (-8,135));ax.set_ylim((-11,h+7) if b else (-155,69))
@@ -258,73 +235,45 @@ def preview(d,b=None):
         fig.text(.05,.16,'坐标原点在板框左下角；u 向右，v 向上，TOP 朝被摄物。',fontsize=10,color='#495e58')
     else:
         fig.text(.72,.75,'背视投影',fontsize=16,color='#203e39')
-        fig.text(.72,.59,'绿线   板框与承载结构\n红带   主板至驱动板线束\n棕圈   安装孔',fontsize=12,linespacing=1.8)
+        fig.text(.72,.59,'绿线   板框与承载结构\n红线   机内连接示意\n棕圈   安装孔',fontsize=12,linespacing=1.8)
         fig.text(.72,.36,'三板深度不同。\n投影重叠不代表实体干涉。\n请搭配装配 STEP 检查。',fontsize=11,linespacing=1.8)
     for j,k in enumerate(['BOARD_OUTLINE','HOLES','CONNECTORS','FIXED_PARTS','KEEPOUT_TOP','HEIGHT_LIMIT']):
         fig.text(.05+j*.15,.078,'━  '+LAY[k][1],fontsize=10,color=LAY[k][0])
     fig.savefig(DIR/((b['id'] if b else 'assembly_layout')+'.png'),dpi=180,facecolor='white');plt.close(fig)
-def guide(payload,summary):
-    md=['# PCB 结构交接 · v0.3','','**用途：导入板边、对齐、预布局及查干涉；不是厂家封装库或下单文件。** 先读本页，再开对应 PNG，最后导入 DXF。三维以同目录 STEP 为准。','',
-        '## 坐标与交换','',
-        '- 三板 **从 TOP 往下看**；局部原点是外接矩形左下角（圆角切去该点时仍用虚拟交点）。u 向右、v 向上；DXF 是 R2010，1:1、mm。坐标均为标称值，不含加工公差。',
-        '- 各板给出 BOT 原点 O；整机逻辑坐标为 (Ox+u, Oy−v, Oz+t)，其中 t 从板底向 TOP。STEP 是右手坐标 (X,−Y,Z)；与 DXF 对齐只平移，不再镜像。整体 DXF 是背视投影，无保密镜头/传感器数据。',
-        '- 导入板边只选 BOARD_OUTLINE；只将 HOLES 的**小圆**建为 NPTH，外同心圆为禁铜兼禁件，不钻第二次。实线框是器件投影/插合体预算，不是焊盘。无型号时，1 脚小圆是交接方向基准，不可据此定铜皮。','',
-        '| 图层 | 含义 |','|---|---|']+[f'| {k} | {v[1]} |' for k,v in LAY.items()]
-    for b in B.values():
-        md+=['','## '+b['name']+'（'+b['id']+'）','','| 项目 | 结构输入；位置单位 mm |','|---|---|',
-             f"| 板框与层叠 | {fmtp(b['size'])}；R{b['corner_radius']:g}；{b['layers']} 层 {b['material']}，厚 {b['thickness']:g} |",
-             f"| 原点 / 面向 | BOT O=({fmtp(b['origin'])})；TOP 朝 +Z |"]
-        md+=['| 安装 | '+('；'.join(f"{t['ref']} ({fmtp(t['center'])})" for t in b['holes'])+f"；{b['holes'][0]['kind']}，Ø{b['holes'][0]['drill']} 钻，Ø{b['holes'][0]['keep_d']} 双面不放件/不露铜、不走铜" if b['holes'] else '不钻孔；四角绝缘支脚承托，壳罩侧壁定位。')+' |']
-        for it in b['connectors']:
-            pitch='厂家混合节距待定' if it['pitch'] is None else f"{it['pitch']:g} mm"
-            md.append(f"| {it['ref']} {it['type']} | 中心 ({fmtp(it['center'])})，1 脚基准 ({fmtp(it['pin1'])})，{direction(it['direction'])}，{it['pin_count']} 位，{pitch}；{nets(it)} |")
-        for it in b['fixed']:md.append(f"| {it['ref']} {it['name']} | ({fmtp(it['center'])})，TOP；外形区 [{fmtp(it['rect'])}] |")
-        for z in b['height_zones']:md.append(f"| {z['id']} 限高 | [{fmtp(z['rect'])}]，TOP ≤ {z['top']:g} / BOT ≤ {z['bot']:g}；{z['why']} |")
-        for k in b['keepouts']:md.append(f"| {k['id']} 禁布 | {k['side']} [{fmtp(k['rect'])}]：{k['why']} |")
-        if b['id']=='led':md+=['| 阵列 | 72 × YJ-BC-3030-G04；封装 3 × 3，结构高度预算 1.0。12 列 × 6 行，节距 5.5 × 7.6；暖/冷棋盘交错。每行每色 6 颗串联，六行并联。W1…W6、C1…C6，行间交替换向。焊盘极性须用原厂封装核对。 |']
-    md+=['','### 板外定位（整机 X, Y, Z）','','| 器件 | 接触面中心 / 由接触面伸出方向 | 线束目的地 |','|---|---|---|']
-    for it in payload['remote_parts']:
-        md.append(f'| {it["ref"]} {it["name"]} | ({fmtp(it["xyz"])}) / ({fmtp(it["normal"])}) | {it["board"]} {it["port"]}：'+', '.join(it['nets'])+' |')
-    md+=['','### 驱动板分区实测','','| 分区 | 刚体首触 | 不借用叶轮空间的净空 | 允许器件与装配高度 |','|---|---:|---:|---:|']
-    for k in B['driver']['height_zones'][1:]:
-        md.append(f"| {k['id']} | {k['static_contact_top']:.2f} | {k['clearance_top']:.2f} | {k['top']:.2f} |")
-    md+=['','## 锁定、可动与签核','','- **锁定（挪动量 0 mm）**：三板外形与孔、USB 口面/朝向、三键五灯、主板支脚、72 颗发光中心、板边压筋与回转井。未协商不能移动。外形公差、板厂铣边与成品孔公差另定。',
-         '- 其余连接器中心先按图冻结试排；如需移位，主/驱信号及灯板焊线端可提案沿 u ±0.3 mm，不可改变 v、朝向、禁圈、插合区或网络次序，须结构复核后生效。其余固定项 0 mm。功率电感的 10 × 10 包络可在本路 15.8 × 16 分区内平移，整包络留在区内，不得侵入孔圈；不必照画示意电感封装。',
-         f"- 仅做器件外形试排：最大器件 {2+len(B['driver']['rough_placement'])}/26；两颗 7×7 电感与两颗 3×2.5 调光 PMOS 可排 {2+len(B['driver']['compact_candidate']['other_parts'])}/26。坐标见接口 JSON，不是焊盘或推荐开关回路。",
-         '- 电感两区的首触与工作值见上表。靠孔的 LED 到 候选 Ø4.0 小头紧固禁圈 0.618 mm；需要螺钉头公差、孔偏心、贴装公差闭环，不能加大垫圈。线束在 LED 下缘过井，电池七线另走朝主板的仓壁窗口，不穿过电芯。',
-         '- 接口基线要求断一针后仍不超过额定 70%。3.7 A 已是 5 A 的 74%；按这一个负载反推至少 5.29 A/针，尚未计风扇等支路。需电气校核整套导线与接触件的降额或故障关断。',
-         '- DXF 使用 Unicode CN 文字样式。如 CAD 缺少黑体，映射 CN 为本机思源黑体或系统中文黑体，不要炸开板边；PNG 是无字体依赖的对照图。',
-         '- 主板 8 mm 为从板面起算的硬上限（包括插合后的插头、卡锁、线弯）；约 10 mm 竖座至少超 2 mm。基线选卧式 2×2，含插头目标 ≤7.5 mm。若无合格料，可提案 2×2 焊线阵列＋压线夹＋线端额定配对；线端停放区未冻结，不能当作已验收或擅自取消 2×2 接口。两端每针 ≥5 A；满载/单针异常与导线温升由电气复核。',
-         '- 驱动板为四层（L2 完整地平面），双 TPS92692-Q1、TOP 单面贴；不以背面 1.20 mm 物理缝隙排器件。两路各按 20 W、单路输入约 3.7 A 预留；正常总功率由固件封顶 20 W。两路同开故障依赖散热片上 85°C 常闭开关硬切使能，不表示可持续 40 W。',
-         '- 温控开关装在散热片，不在驱动板上感温。J5 两线是其使能回路，不是灯板 NTC。电芯上两枚探头接主板 J5；灯板 RT1 就近贴铝基板，走独立回线。跨板信号没有 5 V；风扇由驱动板本地降压。',
-         '- USB 功能网名为接口别名，A1 方向和 16 接点是预选方案，D±、SBU、屏蔽及具体引脚由电气侧核定；接口图未作厂家 land pattern。调试区按 6 个 1.27 mm 触点保留，拆罩探测。硬件需求列出 3V3、GND、SWDIO、SWCLK、NRST 和 UART；UART 是否还需 RX/TX 两脚（可能共需 7 个）及针序须由电气确认，不把未定针脚写成 NC。铝基板六个表贴焊线盘不得用贯穿焊脚，回流后核 1 mm 焊点高度及绝缘。均流电阻与二极管/电容最终落点由电气排布。',
-         '- 驱动电感数量和两区空高已建模；磁饱和、铜面积、温升、卡锁/线皮与真实插拔行程、触点电流、85°C 开关外形及固定夹仍需实物验证。驱动板两只候选 10 mm 电感可放入，不等于整板布通或满足热性能。',
-         '- 截面/弯折量规从主板入口沿仓背脊盖、颈部、灯板下缘至驱动分线区。散线分支及线端不以量规代替。用实选线的外径、最小弯曲半径、扭距重跑；先穿线再压壳，带插壳不能从颈槽穿过。','',
-         '## 本版实际复核','']+['- '+c['name']+'：'+('通过' if c['ok'] else '不通过')+'。'+c['value'] for c in summary]
-    (DIR/'README.md').write_text('\n'.join(md)+'\n')
 def produce():
-    DIR.mkdir(exist_ok=True);checks=[];remote=remote_devices(B,features,P,L)
-    payload=dict(source='interface/mech_elec.json',source_sha256=sha256((ROOT/'interface/mech_elec.json').read_bytes()).hexdigest(),direction_convention='PCB 局部坐标：箭头指向插头所在侧/拔出或引线方向；插入相反。',version='0.3',units='mm',layers={k:v[1] for k,v in LAY.items()},boards=B,remote_parts=remote,
-           project_axes='从背面看 X右、Y下、Z朝被摄物；原点左上背玻璃',step_axes='(X,-Y,Z) mm',
-           rect_format='[umin,vmin,umax,vmax]，高度从各自板面起；分区覆盖 BASE，禁布优先',
-           routes={'trunk_x':L['neck']['x'][0]+P.wall+P.slot_w/2,'centerline_yz':bundle_path(),'gauge_wh':[6.85,2.4],'entry_gauge_wh':[6.85,2.2],'entry_centerline_y':[50,65],'pod_trunk_x':54.55,'pod_cover_x':[50.1,58.0],'bend_center_radius':5,'power':SPEC['harness']['power'],'twists':[[1,3],[2,4]],'signal':SPEC['harness']['signal']},
-           tiers={'locked':'板边、紧固孔、光学与外部人机接口：0 mm','connector_proposal':'J4 主/ J2 驱信号、灯板焊盘只可提案 u±0.3 mm，复核后生效','power':'最大包络限定在各自分区，TOP≤5.5 mm'})
-    from model import ridge_path,neck_x
-    xyz=[[neck_x(y),y,z] for y,z in reversed(bundle_path())]+[[neck_x(15+i*23/32),15+i*23/32,6.4] for i in range(1,33)]+[[neck_x(y),y,z] for y,z,t in ridge_path(L,P)[1:]]
-    payload['routes'].pop('centerline_yz');payload['routes']['centerline_xyz']=xyz
-    (DIR/'pcb_interface.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n')
-    persisted=json.loads((DIR/'pcb_interface.json').read_text())
-    for b in B.values():board_dxf(b)
-    assembly_dxf()
-    for gid in [*B,'assembly_layout']:
-        d=ezdxf.readfile(DIR/(gid+'.dxf'))
-        outcome=d.audit();assert not outcome.has_errors and not outcome.fixes,(gid,outcome.errors,outcome.fixes)
-        if gid in B:checks+=audit(persisted['boards'][gid],d)
-        else:
-            o=[e for e in d.modelspace() if info(e)[0]=='board'];ck=len(o)==3 and all(e.closed for e in o) and d.units==4 and d.dxfversion=='AC1024'
-            for e in o:
-                b=B[info(e)[1]];x,y,_=b['origin'];w,h=b['size'];ck &= np.allclose(geom(e),[x,-y,x+w,-y+h])
-            checks.append(dict(name='整机背投影与三板原点',ok=bool(ck),value='3 条闭合板框，与装配平移量逐一核对；R2010 / mm'))
-        preview(d,B.get(gid))
-    guide(payload,checks)
+    from model import MOUNTS
+    from driver_fit import trial,compact
+    d=B['driver'];d['rough_placement']=trial(d);d['compact_candidate']=compact(d)
+    DIR.mkdir(exist_ok=True);checks=[]
+    def pinloc(board,ref):
+        bd=B[board];it=next(r for r in bd['connectors'] if r['ref']==ref);return [*xy(bd,it['center']),round(bd['origin'][2]+bd['thickness'],3)]
+    ends={'主驱功率':(pinloc('main','J3'),pinloc('driver','J1')), '主驱信号':(pinloc('main','J4'),pinloc('driver','J2')), '灯板六线':(pinloc('driver','J3'),pinloc('led','J1')), '风机三线（四位座，第4针空置）':(pinloc('driver','J4'),[44.3,88.5,12.5]), '温控硬切':(pinloc('driver','J5'),[56.5,93.5,16.75])}
+    routes=[(name,[a[:2],b[:2]]) for name,(a,b) in ends.items()]
+    payload=dict(version='0.4',variant=VARIANT,revision='C-r7',enclosure=dict(camera_clear_xy=[0,0,*WINDOW_XY],rail_x=RAIL_X,rail_y=RAIL_Y,rail_max_z=3,cover_screw_xy=MOUNTS,lower_head_max_y=111.,units='mm；整机背视坐标'),power=dict(**POWER,contract_modes=[dict(v=v,a=a,led_w=policy(v,a)[0],phone_a=policy(v,a)[1]) for v,a in [(20,3),(15,3),(15,2),(5,3),(5,1.5)]],unknown='待机，输出关闭'),units='mm',boards=B,axes='板左下 BOT：X=Ox+u，Y=Oy−v，Z=Oz；TOP 朝 +Z；STEP 为 (X,−Y,Z)。',connection_endpoints_xyz=ends,routes_note='端点以板面器件中心或板外引线区代表。背视直线仅表达电气连接，不是可制造的空间线束路径。',routes=routes,layers=LAY,battery=dict(internal=False,wireless_minutes=0,source='外置单口 USB-C PD SPR 电源',connector='main/J1'),fan_bbox=FAN)
+    (DIR/'pcb_interface.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n'); rb=json.loads((DIR/'pcb_interface.json').read_text())
+    md=['# 贴合背夹 · PCB 结构交接 v0.4 · C 第七轮（沿用第六轮几何）','','坐标与 STEP 换算：'+payload['axes'],'','板框、安装孔、USB 开口、三键五灯与发光中心固定；不能无复核移动。Q_TIM 的接触面必须落在铝舌导热垫内；L_IN 只能在 INPUT_L 内放置。其余接口现为试排位置，不是封装批准。两功率电感只可在各自分区内平移。']
+    for b in B.values():
+        board_dxf(b);doc=ezdxf.readfile(DIR/(b['id']+'.dxf'));assert not doc.audit().has_errors;cs=audit(rb['boards'][b['id']],doc);checks+=cs;preview(doc,b)
+        md+=['','## '+b['name'],'','| 项目 | PCB 局部坐标 / 规格（mm） |','|---|---|',f"| 板体 | {fmtp(b['size'])}，R{b['corner_radius']}，{b['layers']} 层 {b['material']}，厚 {b['thickness']}；BOT 原点 {fmtp(b['origin'])} |"]
+        for h in b['holes']:md.append(f"| {h['ref']} | {fmtp(h['center'])}，钻 Ø{h['drill']}，紧固禁圈 Ø{h['keep_d']} |")
+        for it in b['connectors']:md.append(f"| {it['ref']} {it['type']} | {fmtp(it['center'])}；1脚 {fmtp(it['pin1'])}，方向 {direction(it['direction'])}；{nets(it)}{'；'+it['note'] if it.get('note') else ''} |")
+        for it in b['fixed']:md.append(f"| {it['ref']} {it['name']} | 中心 {fmtp(it['center'])} |")
+        for k in b['keepouts']:md.append(f"| {k['id']} {k['side']} | {fmtp(k['rect'])}；{k['why']} |")
+        for k in b['height_zones']:md.append(f"| {k['id']} | {fmtp(k['rect'])}：TOP ≤ {k['top']}，BOT ≤ {k['bot']} |")
+    md+=['','主板 60×23.5，较 A 向下收 1 mm（两面少 120 mm²）；USB 边固定，仍比最初 60×21 多 300 mm²，4 层；取消内置电池、主板 J5 及充电路径。J1 目标 20V/3A Sink，J2 仅 5V 最大 3A Source；45W 档限手机，详见报告预算。原 BQ25798 方案不可直接视为定版；需 8V/6A 无电池稳压电源与板温检测。驱动板 L2 保持完整地；J1 改短引线，候选紧凑方案只作本体排布，配对插头、走线与返回电流均须复排。','灯板 62×34；4.5×5.2 节距；每色 6 串×6 并，温控硬切、六线与板载 NTC 保留。四孔用 Ø4 小头，螺钉公差待验。','DXF：'+ '；'.join(k+'：'+v[1] for k,v in LAY.items()),'','整机 DXF 的 ENCLOSURE 层已更新镜头窗、外顶轨、背盖钉头投影，不是 PCB 钻孔。板框、孔位、接口仍为 R5 坐标。头方已接受冻结导电件；分区包络实测见 ../out/report.md。']
+    (DIR/'README.md').write_text('\n'.join(md)+'\n');doc,m=setup();rounded(m,'PHONE_REF',W,H,P.corner_r,'phone','public',0,-H)
+    rounded(m,'ENCLOSURE',71.6,87.9,9,'body','shell',-.5,-143);rect(m,'ENCLOSURE',[FAN[0],-FAN[3],FAN[1],-FAN[2]],'blower','35x35')
+    wx,wy=WINDOW_XY
+    ln(m,'ENCLOSURE',(0,-wy),(wx,-wy),'window','edge_y');ln(m,'ENCLOSURE',(wx,-wy),(wx,0),'window','edge_x')
+    rect(m,'ENCLOSURE',[RAIL_X[0],-RAIL_Y[1],RAIL_X[1],-RAIL_Y[0]],'rail','top')
+    for k,(x,y) in enumerate(MOUNTS):circle(m,'ENCLOSURE',(x,-y),1.9,'cover_head','S'+str(k+1))
+    for b in B.values():
+        x,y,z=b['origin'];rounded(m,'BOARD_OUTLINE',*b['size'],b['corner_radius'],'board',b['id'],x,-y)
+        for h in b['holes']:
+            xx,yy=xy(b,h['center']);circle(m,'HOLES',(xx,-yy),h['drill']/2,'drill',h['ref'])
+    for title,pts in routes:m.add_lwpolyline([(x,-y) for x,y in pts],dxfattribs=att('HARNESS'))
+    for y,lab in [(20,'手机公开外形'),(47.5,'镜头开窗 · 左上通边'),(108.5,'下部背盖钉 · 上移'),(68,'灯板与横向风道'),(96,'35 mm 离心风机'),(112,'底层驱动 / 上层主板'),(125.8,'USB-C ×2 朝下')]:
+        ln(m,'NOTES',(61,-y),(74,-y));text(m,'NOTES',(75,-y),lab,1.8)
+    save(doc,DIR/'assembly_layout.dxf');doc=ezdxf.readfile(DIR/'assembly_layout.dxf');q=[e for e in doc.modelspace() if info(e)[0]=='board'];assert not doc.audit().has_errors and len(q)==3 and all(e.closed for e in q);preview(doc)
+    checks.append(dict(name='整机背视 DXF',ok=True,value='3 个闭合板框，单位毫米。'))
     return checks

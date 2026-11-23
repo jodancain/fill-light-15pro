@@ -1,8 +1,10 @@
 """装配坐标为接口中的毫米；形体先按功能分开，再交给同一份导出清单。"""
 from pathlib import Path
 import json, re, math
-from board_layout import contract,xy,absrect,remote_devices
-from ridge import ridge_path,strip,flat_strip,half_at,neck_x,X as RX,WIDTH,HALF,CAP_IN,CAP_OUT,BANDS
+from board_layout import contract,xy,absrect
+from v04_config import *
+from c04 import *
+from build123d import loft
 from dataclasses import dataclass
 from build123d import Solid, Plane, Pos, Compound, RectangleRounded, extrude, Color, Axis, Face, Wire
 
@@ -16,10 +18,6 @@ W,H,T = map(float,re.search(r'手机外形\s*([\d.]+)\s*×\s*([\d.]+)\s*×\s*([\
 class Structure:
     # 设计人员自定的尺寸或零件占位；不是手机测绘值。单位 mm。
     corner_r: float=9           # 手机圆角仅作示意
-    cam_offset: float=6         # 取整数的示意岛，方形、无光学数据
-    cam_size: float=30
-    cam_height: float=4
-    cam_clear: float=2
     clip_span: float=12
     liner: float=1.2
     fit: float=.25
@@ -74,7 +72,6 @@ class Structure:
     light_r: float=1.02
     # 局部特征参数。计算中的微量越界只为布尔通切，不是实物尺寸；explode 为演示位移。
     cam_r: float=5               # 示意平台圆角
-    cam_cut_r: float=4           # 背板避让窗圆角
     neck_edge: float=1           # 端部铜母座至侧边余量
     anchor_offsets: tuple=(4,14) # 两只背板定位柱到颈下端
     foot: tuple=(3,2)            # 主板支脚方边、距板端
@@ -108,7 +105,7 @@ MAT={'PETG':('#43545d',1.27),'ASA':('#dc794e',1.07),'TPU':('#80aaa3',1.21),
      '乳白聚碳酸酯':('#fff1cb',1.20),'铝':('#acbec5',2.70),'铝基板':('#dadfda',2.70),
      'FR-4':('#267a6a',1.85),'封装':('#ffcd71',2.2),'风扇总成':('#394756',1.15),
      '暖白封装':('#ffc570',2.2),'冷白封装':('#e4f2ff',2.2),'线束包络':('#739495',0),
-     '电芯':('#5092aa',0),'弹片':('#cca15e',8.6),'接口':('#a4adb4',0),
+     '电芯':('#5092aa',0),'非磁316不锈钢':('#b7c2ba',8.0),'弹片':('#cca15e',8.6),'接口':('#a4adb4',0),
      '手机参照':('#aab8bc',0),'镜头平台示意':('#344d55',0)}
 parts={}; features={}
 def box(x,X,y,Y,z,Z):
@@ -139,37 +136,6 @@ def board_shape(b):
         xx,yy=xy(b,hole['center']);s=s.cut(cyl(xx,yy,z-.1,hole['drill'],t+.2))
     return s
 
-def bundle_path():
-    # (项目 y,z)：主板入口→架空仓底→颈→灯板下缘→驱动板插接前分线区。
-    R=5.;yv=-14.65;zc=6.4;start=yv+R;z2=-7.8
-    pts=[(15.,zc)]
-    pts.append((start,zc))
-    for j in range(1,49):
-        a=j*math.pi/96;pts.append((start-R*math.sin(a),zc-R+R*math.cos(a)))
-    pts.append((yv,z2))
-    for j in range(1,49):
-        a=j*math.pi/96;pts.append((yv-R*(1-math.cos(a)),z2-R*math.sin(a)))
-    pts.append((-32.,z2-R))
-    return pts
-
-def head_bundle(clear=0):
-    path=bundle_path();cx=L['neck']['x'][0]+P.wall+P.slot_w/2
-    # 功率线 OD 1.10，信号 OD 0.65；2 对并排，8 线三列三层，另留包带/间距。
-    wid=6.85+2*clear;half=1.2+clear
-    side=[[],[]]
-    for j,(y,z) in enumerate(path):
-        a=path[max(j-1,0)];b=path[min(j+1,len(path)-1)];dy=b[0]-a[0];dz=b[1]-a[1];l=math.hypot(dy,dz)
-        # 直段接弧处用解析切线，避免相邻直段长度影响法向。
-        if abs(y+9.65)<1e-7:dy,dz,l=-1,0,1
-        if abs(y+14.65)<1e-7:dy,dz,l=0,-1,1
-        for k,sign in enumerate((-1,1)):side[k].append((cx-wid/2,y-sign*half*dz/l,z+sign*half*dy/l))
-    face=Face(Wire.make_polygon(side[0]+side[1][::-1],close=True))
-    return Solid.extrude(face,(wid,0,0))
-
-def bundle_solid(clear=0):
-    w=WIDTH+2*clear;h=HALF+clear
-    return head_bundle(clear).fuse(flat_strip(w,6.4-h,2*h),strip(ridge_path(L,P),RX-w/2,w,lambda y:-half_at(y)-clear,lambda y:half_at(y)+clear))
-
 def chassis():
     g='手机参照'; r=P.corner_r; s=P.clip_span; z=P.liner; top=z+P.frame
     def outline(d,lo,hi): return rr(-d,W+d,-d,H+d,lo,hi,r+d)
@@ -177,292 +143,136 @@ def chassis():
         return [common(a,box(x,X,y,Y,-T-5,top+1)) for x,X in ((-6,s),(W-s,W+6))
                 for y,Y in ((-6,s),(H-s,H+6))]
     def clear(a):
-        off=P.cam_offset-P.cam_clear; span=P.cam_size+2*P.cam_clear
-        return a.cut(rr(off,off+span,off,off+span,-1,top+1,P.cam_cut_r))
+        # 只扣 z>=0 的附件材料；圆角、四角扣及TPU须先并成整体再扣。
+        return a.cut(box(0,WINDOW_XY[0],0,WINDOW_XY[1],0,top+1))
     add('phone','手机 · 公开简化外形',g,'手机参照',outline(0,-T,0),(0,0,-20),mass=0,note='仅作参照，不计增重。')
-    o=P.cam_offset
-    add('camera_dummy','镜头平台 · 示意',g,'镜头平台示意',rr(o,o+P.cam_size,o,o+P.cam_size,0,P.cam_height,P.cam_r),
-        (0,0,-20),mass=0,note='示意，非苹果图纸数据。')
+    add('camera_dummy','镜头平台 · 示意（按开窗包络内缩）',g,'镜头平台示意',rr(*CAMERA_PROXY,P.cam_r),
+        (0,0,-20),mass=0,note='示意，不作定位基准。属于被避让的手机参照，不是背夹材料。')
     inner=P.fit+z; outer=inner+P.jaw; lipz=-T-P.glass_gap
     lining=outline(inner,lipz,z).cut(outline(P.fit,lipz-1,z+.1))
-    liner=clear(outline(inner,0,z)).fuse(*clips(lining))
+    liner=clear(outline(inner,0,z).fuse(*clips(lining)))
     # 侧壁只在角上连接软衬，四边中段不包覆侧面。
-    plate=clear(outline(0,z,top))
+    plate=outline(0,z,top)
     ring=outline(outer,lipz,top).cut(outline(inner,lipz-1,z))
     lip=outline(outer,lipz-P.jaw,lipz).cut(outline(-P.lip,lipz-P.jaw-1,lipz+1))
-    frame=clear(plate.fuse(*clips(ring),*clips(lip)))
-    n=L['neck']; nx,NX=n['x']; ny,NY=n['y']; nz=top; NZ=nz+n['thickness']
-    xs=[NX-P.boss_d/2-P.neck_edge, NX-P.boss_d/2-P.neck_edge-P.neck_pitch]
-    pins=[(midpoint(xs),y) for y in (NY-d for d in P.anchor_offsets)]
-    for x,y in pins:
-        frame=frame.fuse(cyl(x,y,top,P.boss_d,P.insert_l))
-        frame=frame.cut(cyl(x,y,top,P.insert_d,P.insert_l+1))
-    # 主板四只绝缘支脚与背板一体，让 PCB 可从 +z 直接放入，无需挤过倒扣。
-    mb=L['main_board']; mx,MX=mb['x']; my,MY=mb['y']
-    for xx in (mx,MX-P.foot[0]):
-        for yy in (my+P.foot[1],MY-sum(P.foot)):
-            frame=frame.fuse(box(xx,xx+P.foot[0],yy,yy+P.foot[0],top,top+P.board_seat))
-    # 仓两侧支承与中间导轨留出独立通道，不让线束穿过两节电芯。
-    pod=L['pod'];sx=nx+P.wall;SX=sx+P.slot_w
-    add('frame','四角开放壳架','壳架','PETG',frame,(0,0,-8),'背板贴平台；角唇与悬空耳根用局部支撑。')
-    add('liner','贴机软衬','壳架','TPU',liner,(0,0,-14),'背板外侧平放，四角向上。')
-    sx=nx+P.wall; SX=sx+P.slot_w; sz=nz+P.wall; SZ=NZ-P.wall
-    channel=box(sx,SX,ny-5,NY+5,sz,SZ)
-    channel=box(sx,SX,ny-5,15,sz,SZ).fuse(flat_strip(P.slot_w,sz,SZ-sz),box(RX-P.slot_w/2,RX+P.slot_w/2,38,NY+1,sz,SZ))
-    neck=box(nx,NX,ny,NY,nz,NZ).cut(channel,strip(ridge_path(L,P),RX-3.65,7.3,-1.42,1.42))
-    for x,y in pins:
-        neck=neck.cut(cyl(x,y,nz-.1,P.boss_d+2*P.fit,P.insert_l+.2),
-                      cyl(x,y,nz,P.bolt_d,NZ-nz+1),countersink(x,y,NZ,-1))
-    # 开窗贯通 Z；可从侧上方置入螺钉，细长 L 形扳手沿颈身操作。
-    joint_y=ny+P.wall*2
-    for x in xs:
-        neck=neck.cut(cyl(x,ny-.1,(nz+NZ)/2,P.bolt_d,joint_y-ny+.2,(0,1,0)),
-                      box(x-P.head_d/2,x+P.head_d/2,joint_y,joint_y+P.service,nz-.1,NZ+.1))
-    frame=parts['frame']['sh'].cut(strip(ridge_path(L,P),RX-3.65,7.3,-1.43,1.43),flat_strip(P.slot_w,4.95,2.9));parts['frame']['sh']=frame;frame.color=Color(MAT['PETG'][0])
-    neck=neck.cut(strip(ridge_path(L,P),50.45,7.65,CAP_IN-.1,CAP_OUT+.1),box(56.7,64,38,41.6,6.4+CAP_IN,NZ+.1),cyl(61.6,39.8,6.4+CAP_IN-P.insert_l,P.insert_d,P.insert_l+.1))
-    add('neck','双端可拆走线颈','颈部','PETG',neck,(23,0,8),'右侧长边向下，让线槽纵壁立起；端孔局部支撑。')
-    features.update(sx=sx,SX=SX,sz=sz,SZ=SZ,nz=nz,NZ=NZ,xs=xs,pins=pins,channel=channel,
-                    joint_y=joint_y,plate_top=top)
-
-def lamp():
-    k=L['head']; x,X=k['x']; y,Y=k['y']; cx,cy=k['window']['center']; wx,wy=k['window']['size']
-    z=-T-k['z_front_max_above_screen']; Z=min(k['z_rear_max'],z+k['depth_max'])
-    w=P.head_wall; cap=z+P.wall; lens_base=Z-P.lens_t; rim=lens_base-P.wall
-    u,v,h=P.led_xyz; ledface=lens_base-P.mix-h; lb=L['led_board']; pcb_lo=ledface-lb['pcb_thickness']
-    sink_lo=pcb_lo-P.sink_h; ftop=sink_lo+P.fan_recess-P.fan_gap; fb=ftop-P.fan_h
-    fan=k['fan']; fx,fy=fan['center']; fs=fan['size']; f=fs/2
-    def centered(a,b,lo,hi): return box(cx-a/2,cx+a/2,cy-b/2,cy+b/2,lo,hi)
-    shell=rr(x,X,y,Y,cap,rim,P.housing_r).cut(
-        rr(x+w,X-w,y+w,Y-w,cap-1,rim+1,P.housing_r-w))
-    bezel=rr(x,X,y,Y,rim,Z,P.housing_r).cut(centered(wx,wy,rim-1,Z+1))
-    bezel=bezel.cut(centered(wx+2*P.lens_flange+.2,wy+2*P.lens_flange+.2,lens_base,Z+.1))
-    # 分体压圈：先将柔光片粘在圈背，再从发光侧整体放入；无需把片挤过灯板肩。
-    a,b=lb['size']
-    shelves=[box(e,E,cy-P.led_shift-b/2+P.shelf[1],cy-P.led_shift+b/2-P.shelf[1],ledface,ledface+P.wall)
-             for e,E in ((x+w,cx-a/2+P.shelf[0]),(cx+a/2-P.shelf[0],X-w))]
-    shell=shell.fuse(*shelves)
-    jz=(features['nz']+features['NZ'])/2
-    # 底边两只内置铜母座，轴向与颈内短螺钉一致。
-    for xx in features['xs']:
-        shell=shell.fuse(cyl(xx,Y,jz,P.boss_d,w+P.insert_l,(0,-1,0)))
-        shell=shell.cut(cyl(xx,Y+.1,jz,P.insert_d,P.insert_l+.2,(0,-1,0)))
-    sx,SX,sz,SZ=(features[q] for q in ('sx','SX','sz','SZ'))
-    shell=shell.cut(box(sx,SX,Y-w-.1,Y+.1,sz,SZ))
-    # 两侧鳍片层出风；后盖风机层进风。槽间筋 >= 2 mm。
-    for side in (x-.1,X-w-.1):
-        for i in range(P.exhaust[0]):
-            yy=cy-P.exhaust[1]+i*P.vent_step
-            shell=shell.cut(box(side,side+w+.2,yy,yy+P.vent_w,sink_lo+P.exhaust[2],pcb_lo-P.fin_base-P.exhaust[2]))
-    # 驱动板挡住部分后盖格栅，在两侧低层补设进风；与上层铝鳍片排风槽分层。
-    for side in (x-.1,X-w-.1):
-        for i in range(P.intake[0]):
-            yy=fy-P.intake[1]+i*P.vent_step
-            shell=shell.cut(box(side,side+w+.2,yy,yy+P.vent_w,cap+P.deck_adhesive+L['driver_board']['pcb_thickness'],fb))
-    cover=rr(x,X,y,Y,z,cap,P.housing_r)
-    edge=max(P.boss_d/2,P.head_d/2+P.wall)  # 沉头口到外侧也留足 1.2 mm
-    for xx in (x+edge,X-edge):
-        for yy in (y+w+P.boss_d/2-P.boss_merge,Y-w-P.boss_d/2+P.boss_merge):
-            shell=shell.fuse(cyl(xx,yy,cap,P.boss_d,P.service_boss_h)).cut(cyl(xx,yy,cap-.1,P.insert_d,P.insert_l+.2))
-            cover=cover.cut(cyl(xx,yy,z-.1,P.bolt_d,P.wall+.2),countersink(xx,yy,z,1))
-    for i in range(P.grille[0]):
-        xx=fx-f+P.grille[1]+i*P.grille[2]
-        cover=cover.cut(box(xx,xx+P.grille[3],fy-f+P.grille[4],fy+f-P.grille[5],z-.1,cap+.1))
-    # LED 下缘的带状回转井保持外壁轮廓；检查实体而非只量颈部截面。
-    shell=shell.cut(head_bundle(.13))
-    # 后盖上 1.2 mm 的胶垫改为带沉孔承台；从后盖穿板，锁入壳体肩部的 M2 铜母。
-    d=B['driver'];dz=d['origin'][2];dt=dz+d['thickness']
-    for hole in d['holes']:
-        px,py=xy(d,hole['center']);left=px<cx
-        bridge_lo,bx=(x+w-.4,px) if left else (px,X-w+.4)
-        boss=cyl(px,py,dt,5.6,3.8).fuse(box(bridge_lo,bx,py-2.2,py+2.2,dt,dt+3.8))
-        shell=shell.fuse(boss).cut(cyl(px,py,dt-.05,P.insert_d,3.15))
-        cover=cover.fuse(cyl(px,py,cap,5.6,P.deck_adhesive)).cut(cyl(px,py,z-.1,P.bolt_d,dz-z+.2),countersink(px,py,z,1))
-    add('head_shell','灯头框 · 双侧排风','灯头','ASA',shell,(0,-23,0),'发光窗朝下；两侧风槽与铜母座局部支撑。')
-    add('head_bezel','发光窗压圈','灯头','ASA',bezel,(0,-23,45),'外侧平面朝平台；压圈和柔光片从发光侧装入。')
-    add('head_grille','进风格栅后盖','灯头','ASA',cover,(0,-23,-37),'外侧大面平放。')
-    add('diffuser','乳白柔光片','灯头','乳白聚碳酸酯',centered(wx+2*P.lens_flange,wy+2*P.lens_flange,lens_base,Z),
-        (0,-23,38),note='整片裁切，从背侧装入压圈，边缘固定。')
-    add('led_board','铝基灯板','电路板','铝基板',board_shape(B['led']),(0,-23,17))
-    gx,gy=lb['grid']; dx,dy=lb['pitch']
-    beads=[]
-    for col,tag,mat in [('W','warm','暖白封装'),('C','cool','冷白封装')]:
-        bb=[box(*absrect(B['led'],e['rect']),ledface,ledface+h) for e in B['led']['leds'] if e['color']==col]
-        beads.extend(bb); add('led_'+tag,('暖白 2700 K' if col=='W' else '冷白 6500 K')+' · 3030 × 36','电路板',mat,pack(*bb),(0,-23,23),mass=.35)
-    sa=a-2*P.sink_margin[0]; sb=b-2*P.sink_margin[1]; sink=centered(sa,sb,pcb_lo-P.fin_base,pcb_lo)
-    for i in range(P.fin_count):
-        yy=cy-sb/2+(sb-P.fin_t)*i/(P.fin_count-1)
-        sink=sink.fuse(box(cx-sa/2,cx+sa/2,yy,yy+P.fin_t,sink_lo,pcb_lo-P.fin_base))
-    # 风扇外框嵌入局部避让腔。保留周边全高鳍片，不令风扇与鳍片重叠。
-    sink=sink.cut(box(fx-f-.25,fx+f+.25,fy-f-.25,fy+f+.25,sink_lo-.1,sink_lo+P.fan_recess))
-    for hole in B['led']['holes']:
-        hx,hy=xy(B['led'],hole['center'])
-        sink=sink.fuse(cyl(hx,hy,pcb_lo-3.8,4.8,3.8)).cut(cyl(hx,hy,pcb_lo-3.5,2.05,3.6))
-    # 铝件四只加厚安装台与风扇四角同轴，M2 盲孔不打穿贴灯面的散热底板。
-    for dx in (-1,1):
-        for dy in (-1,1):
-            hx=fx+dx*P.fan_pitch/2; hy=fy+dy*P.fan_pitch/2
-            sink=sink.fuse(cyl(hx,hy,sink_lo+P.fan_recess,P.boss_d,P.sink_h-P.fin_base-P.fan_recess))
-            sink=sink.cut(cyl(hx,hy,sink_lo+P.fan_recess-.1,P.tap_m2,P.insert_l+.1))
-    # 温控开关压接实铝平面（独立于风扇），横向耳片卡簧/夹具待定型。
-    sink=sink.fuse(box(7,14,-36,-28,sink_lo,pcb_lo-P.fin_base))
-    add('heatsink','横向通风铝鳍片','灯头','铝',sink,(0,-23,5))
-    fanbody=rr(fx-f,fx+f,fy-f,fy+f,fb,ftop,P.fan_r).cut(cyl(fx,fy,fb-.1,fs-2*P.fan_frame,P.fan_h+.2))
-    for xx in (-1,1):
-        for yy in (-1,1):
-            fanbody=fanbody.cut(cyl(fx+xx*P.fan_pitch/2,fy+yy*P.fan_pitch/2,fb-.1,P.bolt_d,P.fan_h+.2))
-    nb,ratio,clear,root,tip,neg,pos,low,high=P.rotor
-    hub=cyl(fx,fy,fb+clear,fs*ratio,P.fan_h-2*clear)
-    blades=[box(fx+root,fx+f-tip,fy-neg,fy+pos,fb+low,fb+high).rotate(Axis((fx,fy,0),(0,0,1)),i*360/nb) for i in range(nb)]
-    add('fan','40 mm 轴流风扇','灯头','风扇总成',pack(fanbody,hub.fuse(*blades)),(0,-23,-12),mass=13,note='按 13 g 预算，非实测；叶轮与框分体。')
-    db=L['driver_board']; a,b=db['size']; drive_lo=cap+P.deck_adhesive; drive_top=drive_lo+db['pcb_thickness']
-    by=y+w+P.driver_end_gap
-    add('driver_board','灯驱动板 · 上部层','电路板','FR-4',board_shape(B['driver']),
-        (0,-23,-24),note='裸板＋器件重量预算；器件高度未定，电感与固定接口另列占位；未覆盖未定型器件。')
-    features.update(head_z=z,head_Z=Z,fan_xy=(fx,fy),drive_lo=drive_lo,drive_top=drive_top,fb=fb,
-                    cap=cap,pcb_lo=pcb_lo,lens_base=lens_base,led_top=ledface+h,ftop=ftop,beads=beads)
-
-def power():
-    k=L['pod']; x,X=k['x']; y,Y=k['y']; mid=(x+X)/2; w=k['wall']
-    base=k['base']; z=features['plate_top']+P.underpass; Z=z+k['thickness']; ax=k['cell_axis_y']
-    zc=z+base+P.cell_gap+k['cell_d_max']/2
-    # 两端实壁托住弹片，上下侧壁在电芯赤道处开长窗。盖由 -x 端推入。
-    tray=box(x,X,y,Y,z,Z).cut(box(x+w,X-w,y+w,Y-w,z+base,Z+.2))
-    shoulder=Z-P.wall; lid_hi=shoulder-P.slide_gap; lid_lo=lid_hi-P.lid_t
-    tray=tray.cut(box(x-.1,x+w+.1,y+w,Y-w,lid_lo-P.slide_gap,Z+.1))
-    for e,E in ((y+w,y+w+P.slide_lip),(Y-w-P.slide_lip,Y-w)):
-        tray=tray.fuse(box(x,X-w,e,E,shoulder,Z))
-    # 对侧端檐压住中指，取出电芯不必拆螺钉。
-    m=midpoint(ax); end=X-w
-    tongue=box(end-P.keeper,end,m-P.keeper_half,m+P.keeper_half,shoulder,Z).cut(box(end-P.latch_hole[0],end-P.latch_hole[1],m-P.latch_hole[2],m+P.latch_hole[2],shoulder-.1,Z+.1))
-    tray=tray.fuse(tongue)
-    window_x=k['cell_length_range'][1]/2+.2
-    for e,E in ((y-.1,y+w+.1),(Y-w-.1,Y+.1)):
-        tray=tray.cut(box(mid-window_x,mid+window_x,e,E,zc-P.cheek_vent_h/2,zc+P.cheek_vent_h/2))
-    # 电芯测温和两对独立电池线由下端壁出仓，与下方主驱线束分道。
-    sx,SX,sz,SZ=(features[q] for q in ('sx','SX','sz','SZ'))
-    # 不打旧仓底通孔。
-    battery_end=next(j for j in B['main']['connectors'] if j['ref']=='J5')
-    ax0,ax1,*_=absrect(B['main'],battery_end['rect']); bz0=z+1.4;bz1=bz0+2.7
-    tray=tray.cut(box(ax0,ax1,Y-w-.1,Y+.1,bz0,bz1))
-    features['battery_exit']=(ax0,ax1,bz0,bz1)
-    lid=box(x,X-w-P.slide_gap,y+w+P.slide_gap,Y-w-P.slide_gap,lid_lo,lid_hi)
-    for yy in ax:
-        lid=lid.cut(box(x+w,X,yy-P.cell_slot/2,yy+P.cell_slot/2,lid_lo-1,lid_hi+1))
-    # 指压中指使方齿下降，推到位后落入端檐孔；滑入、滑出均须按压。
-    lid=lid.fuse(box(end-P.latch_tooth[0],end-P.latch_tooth[1],m-P.latch_tooth[2],m+P.latch_tooth[2],lid_hi,lid_hi+P.wall))
-    grip_x=x+P.ribs[1]
-    # 中指根部两道拨筋，退盖方向 -x。
-    for i in range(P.ribs[0]):
-        xx=grip_x+P.ribs[2]*i
-        lid=lid.fuse(box(xx,xx+P.wall,midpoint(ax)-P.ribs[3],midpoint(ax)+P.ribs[3],lid_hi,Z))
-    # 线束在端壁局部开鞍形口，绝不从仓底贯穿。中段保持老版滑盖和两道电芯露冠窗。
-    q=ridge_path(L,P); tunnel=strip(q,RX-3.65,7.3,-1.43,1.43)
-    roof=strip(q,50.1,7.9,CAP_IN,CAP_OUT)
-    # 颈末不以顶盖跨矮区；侧脊沿扁束左边作低梁，越过仓顶边后再闭合压盖。
-    side=box(50.1,51.3,50.6,57.85,8.82,23.0)
-    roof=roof.fuse(side).cut(box(49,59,44,57.12,16.20,37))
-    tray=tray.cut(tunnel,roof); lid=max(lid.cut(tunnel,roof).solids(),key=lambda s:s.volume)
-    roof=roof.cut(box(50,59,108.7,115,0,35))
-    # 两端横耳带 M2 通孔；中间悬桥可整个从 +Z 拿掉。耳台均在仓投影之外。
-    for yy,zz in [(39.8,6.4),(105.9,9.5)]:
-        tab=box(57.90,63.8,yy-1.7,yy+1.7,zz+CAP_IN,zz+CAP_OUT)
-        if yy>100:tab=tab.fuse(box(57.8,59.05,yy-1.3,yy+1.3,zz+CAP_IN,17.5))
-        else:tab=box(57.8,63.8,yy-1.7,yy+1.7,zz+CAP_IN,zz+CAP_OUT)
-        roof=roof.fuse(tab).cut(cyl(61.6,yy,zz+CAP_IN-.1,P.bolt_d,1.5))
-    roof=roof.cut(strip(q,RX-WIDTH/2-.03,WIDTH+.06,-1.23,1.23))
-    parts['neck']['sh']=parts['neck']['sh'].cut(roof);parts['neck']['sh'].color=Color(MAT['PETG'][0])
-    add('ridge_cover','仓背线束脊盖','电池仓','PETG',roof,(0,0,30),'侧立打印；拆两端 M2 后向外抬盖，再提线束抽电池盖。')
-    add('battery_tray','双槽电池仓','电池仓','PETG',tray,(0,7,10),'仓底朝下；长通风窗采用局部支撑。')
-    add('battery_lid','指拨滑盖','电池仓','PETG',lid,(-64,7,16),'盖板底面平放；三指沿 x 方向。')
-    for i,yy in enumerate(ax,1):
-        left=mid-P.cell_l/2; right=mid+P.cell_l/2
-        add(f'cell_{i}',f'21700 电芯 {i}','电池仓','电芯',cyl(left,yy,zc,P.cell_d,P.cell_l,(1,0,0)),
-            (0,7+(i-1)*6,25),mass=70,note='标称 70 × Ø21.2；每节按 70 g 计。')
-        for j,(a,b) in enumerate([(x+w,left),(right,X-w)],1):
-            # 触点示意：贴壁基片 + 接触面，细折片连通两面，非实物弹簧。
-            t=P.contact_t; sign=1 if j==1 else -1; wall=a if j==1 else b
-            tip=b if j==1 else a
-            def disk(start,end): return cyl(min(start,end),yy,zc,2*P.spring_r,abs(end-start),(1,0,0))
-            contact=disk(wall,wall+t*sign).fuse(disk(tip,tip-t*sign),
-                        box(a,b,yy-P.spring_r*P.contact_ratio,yy+P.spring_r*P.contact_ratio,zc,zc+t))
-            add(f'contact_{i}_{j}',f'电芯 {i} · {"左" if j==1 else "右"}弹片','电池仓','弹片',
-                contact,(-12 if j==1 else 12,7,15),note='标称长度下压缩态占位；不代表压力或额定电流。')
-    features.update(zc=zc,lid_lo=lid_lo,base=base,tray_z=z)
-
-def controls():
-    b=L['main_board']; x,X=b['x']; y,Y=b['y']; w=P.board_wall
-    z=features['plate_top']; bz=z+P.board_seat; top=bz+b['pcb_thickness']; ce=top+b['height_out_max']
-    g='电路板'; fit=P.fit; x0=x-fit-w; x1=X+fit+w; y0=y-fit-w; y1=Y+fit+w
-    # 靠电池仓的一道壁共享装配间隙，显式裁短，不移动 PCB。
-    y0=max(y0,L['pod']['y'][1]+P.board_pod_gap)
-    shell=rr(x0,x1,y0,y1,z,ce+P.wall,P.hood_r).cut(
-        box(x-fit,X+fit,y-fit,Y+fit,z-.1,ce))
-    usbw,usbh,depth=P.usb
-    for key,port in L['ports'].items():
-        xx,yy=port['x'],port['y']
-        opening=box(xx-usbw/2-fit,xx+usbw/2+fit,yy-.1,y1+.1,top-fit,top+usbh+fit)
-        shell=shell.cut(opening)
-        sock=box(xx-usbw/2,xx+usbw/2,yy-depth,yy,top,top+usbh)
-        sock=sock.cut(box(xx-usbw/2+P.socket_skin[0],xx+usbw/2-P.socket_skin[0],yy-depth+P.socket_skin[1],yy+.1,top+P.socket_skin[0],top+usbh-P.socket_skin[0]))
-        add(key,('输入' if 'input' in key else '输出')+' USB-C 母座',g,'接口',sock,(0,18,13),mass=1.2,note='向 +y 插拔，包络占位，未含线缆胶头。')
-    for i,key in enumerate(L['buttons']):
-        xx,yy=key['x'],key['y']
-        shell=shell.cut(cyl(xx,yy,ce-.1,2*(P.button_r+fit),P.wall+.2))
-        add(f'key_{i+1}',key['name']+'键帽／柱',g,'接口',cyl(xx,yy,top,2*P.button_r,ce+P.wall+P.button_proud-top),
-            (0,13,30),mass=.35,note='含开关的柱状占位。')
-    k=L['indicators']; ax=[k['x'][0]+i*(k['x'][1]-k['x'][0])/(k['count']-1) for i in range(k['count'])]
-    for i,xx in enumerate(ax,1):
-        yy=k['y']; shell=shell.cut(cyl(xx,yy,ce-.1,2*(P.light_r+fit),P.wall+.2))
-        add(f'light_{i}',f'电量导光柱 {i}',g,'乳白聚碳酸酯',
-            cyl(xx,yy,ce-P.guide_inset,2*P.light_r,P.wall+P.guide_inset),(0,13,30))
-    shell=shell.cut(box(features['sx'],features['SX'],y0-.1,y-fit+.1,top-.2,top+3.2))
-    ax0,ax1,bz0,bz1=features['battery_exit']
-    shell=shell.cut(box(ax0,ax1,y0-.1,y-fit+.1,bz0,bz1))
-    # 调试焊盘仅在拆罩后接触，不在正式壳体上留常开探针孔。
-    for k in B['main']['keepouts']:
-        if not k['id'].startswith('CLIP'):continue
-        ax0,ax1,ay0,ay1=absrect(B['main'],k['rect'])
-        if ax0<x+1:ax0=x-fit-.4
-        else:ax1=X+fit+.4
-        shell=shell.fuse(box(ax0,ax1,ay0,ay1,top,ce+.1))
-    q=ridge_path(L,P); yy=105.9; shelf=9.5+CAP_IN
-    shell=shell.fuse(box(59.4,x1,yy-1.95,yy+1.95,shelf-P.insert_l,ce+.1)).cut(cyl(61.6,yy,shelf-P.insert_l,P.insert_d,ce+2-shelf+P.insert_l),box(56.7,64,yy-1.8,yy+1.8,shelf,ce+2),strip(q,RX-3.65,7.3,-1.43,1.43),strip(q,50.45,7.65,CAP_IN-.1,CAP_OUT+.1))
-    shell=shell.cut(box(57.65,59.2,yy-1.45,yy+1.45,shelf,18))
-    shell=shell.cut(parts['ridge_cover']['sh'])
-    for i in range(len(ax)):shell=shell.cut(cyl(ax[i],L['indicators']['y'],ce-P.guide_inset,2*(P.light_r+fit),P.guide_inset+P.wall+.2))
-    add('board_hood','主板罩 · 底边双口','壳架','PETG',shell,(0,13,23),'按键面朝平台；母座两窗局部支撑。')
-    add('main_board','电源与控制主板',g,'FR-4',board_shape(B['main']),(0,13,9),
-        note='估重含小器件余量，不含另列的母座与按键。')
-    features.update(board_ce=ce,board_z=bz)
-
-def board_items():
-    # 使 PCB 工程师可直接用 STEP 的器件最大实体做干涉检查。
-    for key,b in B.items():
-        plane=b['origin'][2]+b['thickness']
-        for it in b['connectors']+b['fixed']:
-            if it['node'] in parts:continue
-            if it.get('shape')=='circle':continue
-            shape=box(*absrect(b,it['rect']),plane,plane+it['height'])
-            add(it['node'],it.get('type',it.get('name',''))+' · '+it['ref'],'电路板','接口',shape,
-                (0,12,16) if key=='main' else (0,-23,-19 if key=='driver' else 21),
-                mass=(1.8 if it['ref'] in ('L_W','L_C') else 0),note='结构占位；非供应商 STEP。连接件重量计入板级预算。')
-    b=B['main'];z=b['origin'][2]+b['thickness']
-    for item in b['fixed']:
-        if item['node'].startswith('light_'):
-            sh=box(*absrect(b,item['rect']),z,z+item['height'])
-            add('smd_'+item['node'],item['ref']+' 电量贴片灯','电路板','封装',sh,(0,13,12),mass=0,note='与导光柱同轴；质量已含在主板小器件中。')
-    # 螺钉头最大占位，螺纹啮合不参加硬干涉；其余金属辅料仍计在重量预算。
-    b=B['led'];z=b['origin'][2]+b['thickness']
-    caps=[cyl(*xy(b,h['center']),z,h['keep_d'],1.55) for h in b['holes']]
-    add('led_fasteners','M2.5 紧固头上限 · 四处','灯头','接口',pack(*caps),(0,-23,20),mass=0,note='Ø4.0 小头包络（待采购），禁用大垫圈；重量已计辅料。')
-    for r in remote_devices(B,features,P,L):
-        x,y,z=r['xyz'];w,l,h=r['size'];nz=r['normal'][2]
-        sh=box(x-w/2,x+w/2,y-l/2,y+l/2,min(z,z+nz*h),max(z,z+nz*h))
-        add(r['ref'].lower(),r['name'],'电池仓' if r['board']=='main' else '灯头','接口',sh,(0,8,18) if r['board']=='main' else (0,-23,-6),mass=.15 if r['board']=='main' else 1.0,note='尺寸为采购上限，需用实际元件和绝缘固定件复核。')
-    add('harness_bundle','主驱线束 · 满包络','颈部','线束包络',bundle_solid(),(15,0,5),mass=0,note='两对双绞＋八芯。显示到两端分线区；重量已计入辅料。')
-
+    rail=box(*RAIL_X,*RAIL_Y,z,top).fuse(box(*RAIL_X,*RAIL_WEB_Y,0,z))
+    frame=clear(plate.fuse(*clips(ring),*clips(lip),rail))
+    # 背板承担力，不再设承颈或外露长线束。低平台到高背盖的过渡均用非金属。
+    for x,y in MOUNTS:
+        frame=frame.fuse(cyl(x,y,top,4.8,22.6-top)).cut(cyl(x,y,18.9,2.95,4.1))
+    for h in B['driver']['holes']:
+        x,y=xy(B['driver'],h['center']);frame=frame.fuse(cyl(x,y,top,4.5,DRIVER_O[2]-top)).cut(cyl(x,y,1.6,1.65,3.2))
+    add('frame','四角半包承力底壳','壳架','PC-FR',frame,(0,0,-8),'贴背面朝平台；角唇局部支撑。')
+    add('liner','软质整片内衬','壳架','TPU',liner,(0,0,-14),'平面朝平台。')
+MAT.update({'绝缘导热垫':('#aea79e',2.5),'PC-FR':('#455854',1.28),'隔热片':('#d2d4be',.22),'锂聚合物包':('#abb2b4',0)})
+def profile(x,X,y,Y,z,r):
+    return Pos((x+X)/2,(y+Y)/2,z)*RectangleRounded(X-x,Y-y,r)
+def make_hood():
+    # 三个水平圆角截面放样：下摆顺手机底端收薄，上表面与灯窗齐平。
+    outer=loft([profile(-.5,71.1,55.1,143,3,10),profile(-.35,70.95,62.05,137.3,11.9,8),profile(-.1,70.7,64.05,132.4,20.6,6),profile(0,70.6,64.1,130.4,24,5)],ruled=True)
+    inner=loft([profile(1,69.6,65.7,141.4,2.9,6.5),profile(1.2,69.4,65.9,134.4,14,5.5),profile(1.5,69.1,65.4,129.6,22.6,3.65)],ruled=True)
+    hood=outer.cut(inner)
+    # 实体电路舱和灯板的四周间隙，不切穿面皮
+    win=rr(5.3,65.3,67,99,22.5,24.5,4)
+    hood=hood.cut(win,rr(4.9,65.7,66.6,99.4,22.5,23.45,4.4))
+    diffuser=rr(5.45,65.15,67.15,98.85,23.4,24,3.85).fuse(rr(5.02,65.58,66.72,99.28,22.65,23.40,4.28))
+    for x,y in MOUNTS:hood=hood.cut(cyl(x,y,3,2.3,22),cyl(x,y,22.95,4.1,2),cyl(x,y,2.99,5.02,19.61))
+    # 两侧沿手机中段换气；避开靠手机侧，不以背玻璃当风道壁。
+    for yy in PORT_Y:
+        hood=hood.cut(box(-2,3,yy,yy+PORT_RUN,*AIR_IN),box(67.3,73,yy,yy+PORT_RUN,*AIR_OUT))
+    # 下层驱动的损耗不在灯板上；侧开对流槽，不把其散热量当风机串联流量。
+    for yy in AUX_Y:hood=hood.cut(box(-2,3,yy,yy+AUX_DY,*AUX_Z),box(67.3,73,yy,yy+AUX_DY,*AUX_Z))
+    # 两个穿带孔仅在背盖斜尾，不在手机底边。6 mm 软带给输入线卸力。
+    for xx in (8.1,12.8):hood=hood.cut(box(xx,xx+1.8,134.2,141.,2.9,24.1))
+    for port in L['ports'].values():
+        x=port['x'];hood=hood.cut(rr(x-6.3,x+6.3,125.5,151,14.3,20.3,1.4))
+    for i,item in enumerate(o for o in B['main']['fixed'] if o['node'].startswith(('key_','light_'))):
+        x,y=xy(B['main'],item['center']);r=2.1 if i<3 else .85
+        hood=hood.cut(cyl(x,y,22.4,2*r+.4,2))
+        add('cap_'+item['ref'],item['name'].replace('同轴中心','')+' · 透出件','壳架','TPU' if i<3 else '乳白聚碳酸酯',cyl(x,y,15+item['height'],2*r,24-(15+item['height'])),(0,0,25),note='弹性帽/导光杆打样占位，胶接限位。')
+    add('shell','斜收尾一体背盖','壳架','PC-FR',hood,(0,0,32),'发光面朝平台；内桥局部可拆支撑。')
+    add('diffuser','嵌入式乳白发光窗','灯头','乳白聚碳酸酯',diffuser,(0,0,39),note='从内侧装入；台阶遮光，周缘点胶。')
 def make():
-    parts.clear(); features.clear()
-    for fn in (chassis,lamp,power,controls,board_items):
-        fn()
-    return parts,features
+    chassis(); make_hood()
+    # 撤去软包；热侧用可拆导风盘。冷风区盘底开窗，手机侧绝缘毡不承载风机。
+    deck=rr(3,67.6,66.95,102.2,4.1,5.45,3.3).cut(rr(6,41,68.4,99.4,4,5.6,2))
+    for xx in (3.,66.):deck=deck.fuse(box(xx,xx+1.5,70,100,3,4.5))
+    # 降低进风窗左缘：不让整道盘沿堵住风机负压侧，保留前后两条横梁。
+    deck=deck.cut(box(2.8,9.8,72.8,94.22,2.99,5.46))
+    # 在前后缘拦回流：出风段由风机口、散热片基座、侧堤和盘底围成。
+    for yy in (66.85,99.1):deck=deck.fuse(box(44.4,65.2,yy,yy+1.2,5.4,18.2))
+    for xx,yy in [(9.8,69.2),(41,98.1),(41,69.2),(9.8,98.1)]:
+        deck=deck.fuse(box(xx,xx+1.5,yy,yy+1.7,3.9,7.5))
+    # 超出中央冷风窗的独立柱用细脚连接到盘边，不堵进风面。
+    for yy in (69.2,98.1):deck=deck.fuse(box(4.9,43,yy,yy+1.7,4.1,5.45))
+    add('shield','冷侧隔热导风盘','风道','PC-FR',deck,(0,-8,18),'盘底朝平台；肩面限位、脚榫定位，不接触手机金属。')
+    add('barrier','贴机侧封面绝缘隔热毡','风道','隔热片',rr(6.8,64.2,67.5,100.3,3,3.8,2),(0,-15,8),note='含保护面膜预算；不作为风机固定面。')
+    blower=rr(*FAN,2).cut(cyl(26.8,84.4,7.4,25,10.2),box(29,45,80.2,96.8,8.2,16.8))
+    # 蜗壳上盖封住 +Z，只有底吸面与 +X 出口连通；不是用自由风量代替风道验收。
+    blower=blower.fuse(rr(9.3,44.3,66.9,101.9,17.06,17.5,2))
+    rotor=cyl(26.8,84.4,9.2,10,7.8)
+    from build123d import Rot
+    for i in range(11):rotor=rotor.fuse(Pos(26.8,84.4,0)*Rot(0,0,i*360/11)*box(4.8,11.9,-.45,.45,9.8,16.4))
+    add('blower','35 × 35 × 10 离心风机','风道','风扇总成',pack(blower,rotor),(-18,0,16),mass=11,note='按 Delta BFB03505HHA-A 尺寸级和重量预算；测速版本与装机 P–Q 待选样。')
+    sink=rr(4.3,66.3,66,100,19.4,20.6,2)
+    for j in range(12):sink=sink.fuse(box(*FIN[:2],68.1+2.65*j,68.9+2.65*j,FIN[2]+1.2,19.45))
+    # 四个攻丝处局部加厚避开蜗壳；采用短螺钉，端部不得侵入风机。
+    for hole in B['led']['holes']:
+        x,y=xy(B['led'],hole['center']);sink=sink.fuse(cyl(x,y,17,4.4,2.5)).cut(cyl(x,y,16.9,2.05,4))
+    sink=Pos(0,0,-1.2)*sink
+    # 原电池端口空间用于电源热接触：舌片与基座连成一体，不向背玻璃散热。
+    sink=sink.fuse(box(9.3,24.3,98.7,106.6,18.2,19.4))
+    add('power_tim','主板功率区绝缘导热垫','风道','绝缘导热垫',box(10.3,23.3,102.9,106.2,17.2,18.2),(6,0,15),note='下面为电源封装接触面预算 Z=17.2；实际压缩、导热和电气间距待选型。')
+    add('sink','带主板导热舌的横向铝鳍','灯头','铝',sink,(17,0,19))
+    for b in B.values():
+        x,y,z=b['origin'];z+=b['thickness'];mv=(0,0,{'led':28,'driver':8,'main':18}[b['id']])
+        add(b['id']+'_board',b['name'],'电路板','铝基板' if b['id']=='led' else 'FR-4',board_shape(b),mv)
+        for it in b['connectors']+b['fixed']:
+            xx,XX,yy,YY=absrect(b,it['rect']);s=box(xx,XX,yy,YY,z,z+it['height'])
+            if it.get('pattern')=='usb':s=s.cut(box(xx+.6,XX-.6,yy+.6,YY+.1,z+.55,z+it['height']-.55))
+            if it.get('shape')=='circle':s=cyl(*xy(b,it['center']),z,XX-xx,it['height'])
+            add(it['node'],it.get('type') or it['name'],'电路板','接口',s,mv,mass=1.6 if it['ref']=='L_IN' else 1.5 if it['ref'] in ('L_W','L_C') else 1.1 if it.get('pattern')=='usb' else 0,
+                note=('针 1–4：'+' / '.join(it['nets'])+'。'+it['note']) if it.get('note') and 'nets' in it else '')
+        for col,mat in [('W','暖白封装'),('C','冷白封装')]:
+            chips=[box(*absrect(b,e['rect']),z,z+e['height']) for e in b['leds'] if e['color']==col]
+            if chips:add('led_'+col,mat+' × 36','灯头',mat,pack(*chips),mv)
+    # 分舱托架：两侧立墙承担光机与主板重量，中央留冷风吸口和侧排通道。
+    deck=parts['shield']['sh']
+    # 灯板左侧留两柱支承，与风机外壳保持间隙；右侧边堤承托散热基座。
+    for yy in (68,97.4):deck=deck.fuse(box(4.1,5.75,yy,yy+1.4,5.4,18.2))
+    for xx,yy in MOUNTS:deck=deck.cut(cyl(xx,yy,2.9,5.1,20))
+    parts['shield']['sh']=deck;deck.color=Color(MAT['PC-FR'][0])
+    base=parts['frame']['sh']
+    for xx in [3.7,65.5]:
+        for yy in [107.1,122.0]:
+            base=base.fuse(box(xx,xx+1.4,yy,yy+1.45,3,14),box(4.9 if xx<5 else 63.95,6.65 if xx<5 else 65.7,yy,yy+1.45,13.1,14))
+    parts['frame']['sh']=base;base.color=Color(MAT['PC-FR'][0])
+    screws=[]
+    for x,y in MOUNTS:
+        screws.extend([cyl(x,y,19.35,2.,3.6),cyl(x,y,22.95,3.8,1.0)])
+    add('screws','四颗背盖沉台螺钉','壳架','非磁316不锈钢',pack(*screws),(0,0,38),mass=.8,note='成品螺钉相对磁导率 ≤1.05，热熔螺母使用同限值的铜材。')
+    fast=[]
+    for h in B['led']['holes']:
+        x,y=xy(B['led'],h['center']);fast.extend([cyl(x,y,16.9,1.98,4.1),cyl(x,y,21,4,1.25)])
+    add('led_fasteners','四只小头 M2.5 · 名义包络','灯头','非磁316不锈钢',pack(*fast),(0,0,31),mass=1,note='非磁成品，μr≤1.05。')
+    # 肩面夹住隔舱两侧，脚榫落入背板浅槽；拆面盖可提起隔舱，不用撬胶或压电芯。
+    hood=parts['shell']['sh'];base=parts['frame']['sh'];deck=parts['shield']['sh']
+    for x,start,end in [(3.,70.6,72.5),(3.,96.7,99.4),(66.,74,94)]:
+        slot=box(x-.15,x+1.65,start-.15,end+.15,2.42,3.01)
+        base=base.cut(slot);deck=deck.fuse(box(x,x+1.5,start,end,2.48,3.05))
+    for xx,XX,yy in [(.9,3.94,67.48),(.9,3.94,94.27),(66.68,69.7,78.22)]:
+        hood=hood.fuse(box(xx,XX,yy,yy+1.2,5.45,22.68))
+    for i,s in [('frame',base),('shield',deck),('shell',hood)]:
+        assert s.is_valid and len(s.solids())==1,i
+        parts[i]['sh']=s;s.color=Color(MAT['PC-FR'][0])
+    # 85°C 开关贴基座，在散热片局部铣出凹位，保留导热接触面。
+    sink=parts['sink']['sh'].cut(box(51.8,61.2,90.8,96.2,14.8,18.2))
+    parts['sink']['sh']=sink;sink.color=Color(MAT['铝'][0])
+    add('thermal_trip','85°C 常闭温控开关 · 候选包络','灯头','接口',rr(52,61,91,96,15.3,18.2,1),(12,0,16),mass=1.2)
+    # 键帽防脱法兰贴顶壁内侧；导光件也按实形导出，透光性另打样。
+    for it in (o for o in B['main']['fixed'] if o['node'].startswith(('key_','light_'))):
+        i='cap_'+it['ref'];v=parts[i];x,y=xy(B['main'],it['center'])
+        if it['ref'].startswith('SW'):
+            v['sh']=v['sh'].fuse(cyl(x,y,21.1,5.8,1.45))
+        v['sh'].color=Color(v['color']);v['orientation']='外端朝上、内端着床，法兰局部支撑；尺寸与光效先做试片。'
+    parts['diffuser']['orientation']='透明或乳白 PC 打样，齐平面朝平台；亦可改用机加工乳白片，不作承力件。'

@@ -8,7 +8,7 @@ from threading import Thread
 import argparse, subprocess
 
 ROOT=Path(__file__).resolve().parents[1]; WEB=ROOT/'web'
-ASSETS=['index.html','app.js','models/filllight.glb','models/parts.json']
+ASSETS=['index.html','app.js','models/filllight.glb','models/parts.json','models/comparison.png','models/power-route.svg']
 
 class Handler(SimpleHTTPRequestHandler):
     def log_message(self,*args): pass
