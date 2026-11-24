@@ -9,7 +9,7 @@ import argparse, subprocess, json
 TRANSPORT="未执行"
 
 ROOT=Path(__file__).resolve().parents[1]; WEB=ROOT/'web'
-ASSETS=['index.html','app.js','models/filllight.glb','models/parts.json','models/comparison.png','models/power-route.svg','battery.html','app_battery.js','models/filllight_battery.glb','models/parts_battery.json','style.css',*[p.relative_to(WEB).as_posix() for p in (WEB/'vendor').glob('*.js')]]
+ASSETS=['index.html','app.js','models/filllight.glb','models/parts.json','models/comparison05.svg','battery.html','app_battery.js','models/filllight_battery.glb','models/parts_battery.json','style.css',*[p.relative_to(WEB).as_posix() for p in (WEB/'vendor').glob('*.js')]]
 
 class Handler(SimpleHTTPRequestHandler):
     def log_message(self,*args): pass
@@ -77,14 +77,11 @@ def main():
 if __name__=='__main__':
     code=main()
     if code==0:
-        out=ROOT/'mech/out'; ledger=out/'round08/web-check.json';ledger.parent.mkdir(parents=True,exist_ok=True)
-        summary=dict(transport=TRANSPORT,assets=ASSETS,code=code,loaders=['C-r7','A2-r1'])
+        out=ROOT/'mech/out'; ledger=out/'round11/web-check.json';ledger.parent.mkdir(parents=True,exist_ok=True)
+        summary=dict(transport=TRANSPORT,assets=ASSETS,code=code,loaders=['C5-r2','A5-r2'])
         ledger.write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n')
-        report=out/'report_battery.md'
-        if report.exists():
-            head='## 网页与冻结交付回读'
-            body=report.read_text().split(head)[0].rstrip()
-            report.write_text(body+'\n\n'+head+'\n\n本地 three.js GLTFLoader：C、A2 模型和目录、单位、方向、分组通过。'
-                +f'{len(ASSETS)} 个离线资源，{TRANSPORT}。详见 [网页记录](round08/web-check.json)。'
-                +'C-r7 完整文件 SHA-256 与发布清单逐件核对，另有 [30 个 STEP/STL/GLB 的逐节点体积和包围盒差](round08/c_readback.json)。\n')
+        for report in (out/'report.md',out/'report_battery.md'):
+            if report.exists() and report.read_text().startswith('# v0.5'):
+                body=report.read_text().split('## 网页离线回读')[0].rstrip()
+                report.write_text(body+'\n\n## 网页离线回读\n\n两版 GLTFLoader/节点/方向/离线资源通过。'+TRANSPORT+'。\n')
     raise SystemExit(code)

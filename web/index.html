@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f5f4ee"><title>全贴合背夹补光灯 · 结构查看台</title>
-<link rel="icon" href="data:,"><link rel="stylesheet" href="./style.css?v=C-r7">
+<link rel="icon" href="data:,"><link rel="stylesheet" href="./style.css?v=C5-r2">
 <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
 </head>
 <body>
@@ -12,11 +12,8 @@
   <a href="https://github.com/jodancain/fill-light-15pro" target="_blank" rel="noopener noreferrer" class="repo">项目仓库 <span aria-hidden="true">↗</span></a>
 </header>
 <main>
-  <!-- 变体导航 --><nav class="options" aria-label="电源版本" style="margin:0;padding:.6rem 1rem"><a href="./index.html?v=C-r7" aria-current="page">外接电源版 C</a>　/　<a href="./battery.html?v=A2-r1">电池版 A2</a><small>　C：125.05 g · 76.70 × 152.70 × 34.30 mm · 拔线即灭</small></nav><!-- /变体导航 -->
-  <section class="intro">
-    <div><div class="eyebrow"><i></i> 结构研究 <b>/</b> 方案 C</div><h1>全贴合背夹补光灯<span> / </span><small>iPhone 15 Pro</small></h1><p>下背面嵌入双色灯窗。电池移到腰间，背夹靠 USB-C 供电；腾出的空间留给风机和铝鳍。</p></div>
-    <div class="revision"><span>v0.4 · C R7</span> 数模已通过 <i></i> 未经打印实配</div>
-  </section>
+  <nav class="options" aria-label="版本切换"><a href="./index.html?v=C5-r2">外接电源版 C</a>　/　<a href="./battery.html?v=A5-r2">电池版 A</a></nav>
+  <section class="intro"><div><div class="eyebrow"><i></i> 结构研究 / C · 外接 PD</div><h1>机顶补光灯<span> / </span><small>iPhone 15 Pro</small></h1><p>从镜头上方向后补光。灯板、驱动和风机都在机顶；右侧线槽通往独立背夹。</p></div><div class="revision"><span>v0.5 · C5-r2</span> 未经打印实配</div></section>
   <div class="workbench">
     <section class="viewport" aria-label="三维装配视图">
       <div class="viewbar"><div><span class="live-dot"></span><strong>装配视图</strong></div><span class="mono" id="vis-count">— / —</span></div>
@@ -50,15 +47,9 @@
       </div>
     </aside>
   </div>
-  <section class="options" aria-labelledby="option-title"><div class="eyebrow">结构决策 / 04</div><h2 id="option-title">为什么选这片背盖</h2><figure class="compare-image"><img src="./models/comparison.png?v=C-r7" loading="lazy" alt="同尺度背视及侧视：左为第 5 轮，右为开窗和螺钉已修订的第 6 轮。"></figure><div class="options-grid"><article><b>C　外接电池 · 已选定</b><p>单口 20 V / 3 A 的 PD 电源放腰袋，背夹不装电芯。优先保灯；20 W 连续是热设计目标，不是实测额定。代价是拔线即灭。</p></article><article><b>A　小电池主动背夹 · 已留档</b><p>短时无线方便，但电芯占用了加深鳍片和风机的空间，旧版持续目标为 12 W。</p></article><article><b>B　无风扇薄背夹 · 未采用</b><p>约 22–25 mm 的含机厚度更薄，估计只能持续 6–8 W，不符合亮度优先的选择。</p></article></div>
-    <figure class="power-route"><img loading="lazy" src="./models/power-route.svg?v=C-r7" alt="腰袋中的 PD 电源经长线接背夹输入，背夹输出经另一根短线给手机。"><figcaption>满配：60 W 单口供电；45 W 档先限手机输出。外接电源、线和软带不计入背夹重量。</figcaption></figure></section>
-  <section class="options" aria-labelledby="use-limits"><div class="eyebrow">装机须知 / 06</div><h2 id="use-limits">已知偏差与使用限制</h2><ul>
-    <li><strong>无线充电和 MagSafe 不可用。</strong>灯板、铝鳍及风机占用线圈区。</li>
-    <li><strong>使用补光灯时关闭手机闪光灯。</strong>灯窗上沿挡住部分外圈光（约 10 mm）；闪光灯内锥余量约 4.0 mm，通过。</li>
-    <li><strong>磁影响仍需实测。</strong>禁磁区内有风机转子、功率电感及紧固件。风机距指南针 ≥62 mm、距最近镜头 ≥33 mm（平面距离）；须比对停转和各转速下的指南针、视频防抖与对焦。紧固件要求成品相对磁导率 ≤1.05。</li>
-    <li><strong>双线插入会进入底部天线带。</strong>手机端用 90° 弯头折向背面，不横跨扬声器或麦克风。样机要比较裸机、装夹不插线、双线插入时的蜂窝、Wi-Fi 和底麦收音。</li>
-  </ul><p>头方已复核第 6 轮几何。窗边最小余量 3.4 mm；灯窗前沿到激光雷达竖向约 1.9 mm、到超广角约 3.2 mm。数模检查全部通过；另须打印实配。</p></section>
+  <section class="options"><div class="eyebrow">结构变化 / 05</div><h2>从下背灯窗到共用机顶灯头</h2><figure class="compare-image"><img src="./models/comparison05.svg?v=C5-r2" alt="同尺度示意：v0.4 灯窗在下背面，v0.5 在手机上方，右侧走线。"></figure><p>灯头 70.6 × 44 × 28.4 mm，距顶边 13 mm。背夹高 15.0 mm，整机附件估重 182.76 g。60 W 外部 PD 满配；不内置电芯，拔线即灭。</p></section>
+  <section class="options"><h2>已知偏差与使用限制</h2><p>补光时关闭手机闪光灯。右侧线束经过顶部天线邻域，双 USB 插线也会影响底部天线；装机后比对蜂窝、Wi-Fi、底麦、指南针、防抖与对焦。不要依赖 MagSafe 或无线充电。</p><p>35°C 连续满配是设计目标，风机装机工作点与温度尚未验收。左侧疏齿铝翼是停扇散热面；勿遮挡、勿握持。勿堵左右通风口。握持区不得超过 48°C；电芯充电不得超过 45°C、放电不得超过 60°C。夹持、灯头锁紧及跌落仍须实配。</p></section>
   <footer><span>手机外形为公开简化外形；镜头开窗按本地图纸推导的包络开，不含原始尺寸。</span><span>拖动旋转 · 双指缩放 / 平移</span></footer>
 </main>
-<script type="module" src="./app.js?v=C-r7"></script>
+<script type="module" src="./app.js?v=C5-r2"></script>
 </body></html>

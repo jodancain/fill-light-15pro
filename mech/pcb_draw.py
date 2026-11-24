@@ -3,7 +3,8 @@ from pathlib import Path
 import os,json,math,shutil
 from collections import Counter
 from hashlib import sha256
-from model import ROOT,L,D,P,B,W,H,SPEC,parts,xy,absrect,PITCH
+ROOT=Path(__file__).resolve().parents[1]
+from v04_config import PITCH
 from c04 import FAN,POWER,VARIANT,policy
 from v04_config import WINDOW_XY,RAIL_X,RAIL_Y,MOUNTS
 CACHE=ROOT/'mech/out/.cache'
@@ -64,11 +65,16 @@ def dim(m,p1,p2,base,angle):
         override={'dimtxt':1.05,'dimasz':.72,'dimgap':.25,'dimexe':.6,'dimexo':.25,'dimdec':2,'dimtad':1});a.render()
 def fmtp(c):return ', '.join(f'{x:g}' for x in c)
 def nets(it):return ' / '.join(n if n is not None else '待定' for n in it['nets'])
-def direction(v):return {(0,0,1):'+Z',(0,1,0):'+v',(0,-1,0):'−v',(-1,0,0):'−u'}[tuple(v)]
+def direction(v):return {(1,0,0):'+u',(0,0,1):'+Z',(0,1,0):'+v',(0,-1,0):'−v',(-1,0,0):'−u'}[tuple(v)]
 def save(d,path):
     d.set_modelspace_vport(height=98,center=(60,21));d.saveas(path)
 def board_dxf(b):
     d,m=setup();w,h=b['size'];name=b['id'];rounded(m,'BOARD_OUTLINE',w,h,b['corner_radius'],'outline',name)
+    if 'clamp' in b:
+        cl=b['clamp']; d.layers.new('CLAMP_CONTACT',dxfattribs={'color':6})
+        for edge,r in cl['rect_uv_mm'].items(): rect(m,'CLAMP_CONTACT',r,'clamp',edge)
+        text(m,'CLAMP_CONTACT',(0,-13),cl['rule'],.75,'clamp_rule')
+        text(m,'NOTES',(0,-15),'参考串号/次序/焊盘朝向：电气侧可调。四边直段宽 0.8 mm，R2 四角不压。',.75)
     for hole in b['holes']:
         for role,k in [('drill','drill'),('hardware','keep_d')]:
             circle(m,'HOLES',hole['center'],hole[k]/2,role,hole['ref'])
@@ -173,7 +179,12 @@ def audit(b,d):
             serial=f"{col}{j+1}.{i//2+1 if j%2==0 else 6-i//2}"
             assert set(lab)=={serial,'+','−'} and np.allclose([lab['+'].dxf.insert.x+.20,lab['+'].dxf.insert.y+.61],it['anode']) and np.allclose([lab['−'].dxf.insert.x+.20,lab['−'].dxf.insert.y+.61],it['cathode'])
             actual[col]+=1;strings[serial.split('.')[0]]+=1
-        gap=min(rect_dist(r,c)-k for _,r in ls for c,k in holes);record('紧固圈至灯珠',gap>=.5,f'最近 {gap:.3f} mm，四孔 Ø4.0 小头禁圈待选型')
+        if holes:
+            gap=min(rect_dist(r,c)-k for _,r in ls for c,k in holes);record('紧固圈至灯珠',gap>=.5,f'最近 {gap:.3f} mm，四孔 Ø4.0 小头禁圈待选型')
+        else:
+            clamp=b['clamp']; polys=list(m.query('LWPOLYLINE[layer=="CLAMP_CONTACT"]'));actual_rect={info(e)[1]:geom(e) for e in polys}
+            expected=clamp['rect_uv_mm'];same=set(actual_rect)==set(expected) and len(polys)==4 and all(e.closed and np.allclose(actual_rect[info(e)[1]],expected[info(e)[1]]) for e in polys)
+            gap=min(math.hypot(max(t[0]-r[2],r[0]-t[2],0),max(t[1]-r[3],r[1]-t[3],0)) for _,r in ls for t in actual_rect.values());record('绝缘压框至灯珠',same and gap>=.5 and any(e.dxf.text==clamp['rule'] for e in m.query('TEXT[layer=="CLAMP_CONTACT"]')),f'四直边回读；距最近灯珠 {gap:.3f} mm')
         record('双色阵列',len(ls)==72 and min(edges)>=1 and not collisions and actual=={'W':36,'C':36} and len(strings)==12 and set(strings.values())=={6},f'72 颗；W/C 各 36，每色 6 串号 × 每串 6 颗；最小边距 {min(edges):.2f} mm，12×6，节距按贴合版')
     return ck
 def preview(d,b=None):
@@ -241,6 +252,7 @@ def preview(d,b=None):
         fig.text(.05+j*.15,.078,'━  '+LAY[k][1],fontsize=10,color=LAY[k][0])
     fig.savefig(DIR/((b['id'] if b else 'assembly_layout')+'.png'),dpi=180,facecolor='white');plt.close(fig)
 def produce():
+    from model import ROOT,L,D,P,B,W,H,SPEC,parts,xy,absrect
     from model import MOUNTS
     from driver_fit import trial,compact
     d=B['driver'];d['rough_placement']=trial(d);d['compact_candidate']=compact(d)

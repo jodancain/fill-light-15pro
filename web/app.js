@@ -3,7 +3,7 @@ import { OrbitControls } from './vendor/OrbitControls.js';
 import { GLTFLoader } from './vendor/GLTFLoader.js';
 
 const $ = id => document.getElementById(id);
-const groups = ['手机参照','壳架','灯头','风道','电路板'];
+const groups = ['手机参照', '壳架', '灯头', '线束', '电路板'];
 const views = {iso:[[.70,.32,1.16],[0,1,0]], back:[[0,0,1],[0,1,0]],
   front:[[0,0,-1],[0,1,0]], side:[[1,0,0],[0,1,0]], top:[[0,1,0],[0,0,-1]]};
 const mobile = matchMedia('(max-width: 760px)');
@@ -33,8 +33,8 @@ async function start(){
   const cam=new THREE.OrthographicCamera(-.15,.15,.15,-.15,.0005,5);
   const ctrl=new OrbitControls(cam,canvas);
   ctrl.enableDamping=false; ctrl.minZoom=.26;ctrl.maxZoom=14;ctrl.zoomToCursor=true;
-  const [d,gltf]=await Promise.all([fetch('./models/parts.json?v=C-r7').then(r=>{
-    if(!r.ok)throw new Error('无法读取零件索引');return r.json();}),new GLTFLoader().loadAsync('./models/filllight.glb?v=C-r7')]);
+  const [d,gltf]=await Promise.all([fetch('./models/parts.json?v=C5-r2').then(r=>{
+    if(!r.ok)throw new Error('无法读取零件索引');return r.json();}),new GLTFLoader().loadAsync('./models/filllight.glb?v=C5-r2')]);
   scene.add(gltf.scene);$('weight').textContent='附件估重 '+d.totalMass.toFixed(1)+' g';
   const records=new Map(), ray=new THREE.Raycaster(), plane=new THREE.Plane();
   let selected=null, preset='iso', w=0,h=0,span=.24,frame=0,amount=0;
